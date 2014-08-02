@@ -32,7 +32,9 @@ import little.nj.mobi.format.ExthUtil;
 import little.nj.mobi.format.IndxHeader;
 import little.nj.mobi.format.InvalidHeaderException;
 import little.nj.mobi.format.MobiDocHeader;
+import little.nj.mobi.format.MobiFile;
 import little.nj.mobi.format.PalmDocHeader;
+import little.nj.mobi.format.PdbFile;
 import little.nj.mobi.format.PdbHeader;
 import little.nj.mobi.format.TagxHeader;
 import little.nj.util.FileUtil;
@@ -61,9 +63,7 @@ public class Inspect {
 
         MarshalBuilder mb = new MarshalBuilder();
 
-        PdbHeader bean = mb.read(buffer, PdbHeader.class);
-
-        buffer.position(bean.records[0].offset);
+        PdbHeader pdbHead = null;
 
         PalmDocHeader palmHead = null;
         MobiDocHeader mobiHead = null;
@@ -73,18 +73,18 @@ public class Inspect {
 
         try
         {
-            palmHead = mb.read(buffer, PalmDocHeader.class);
-            mobiHead = mb.read(buffer, MobiDocHeader.class);
+            PdbFile pdbFile = PdbFile.parse(buffer);
+            MobiFile mobiFile = MobiFile.parse (pdbFile);
 
-            if (mobiHead.hasExth())
-            {
-                exthHead = mb.read(buffer, ExthHeader.class);
-            }
+            pdbHead = pdbFile.getHeader ();
+            palmHead = mobiFile.getPalmHeader ();
+            mobiHead = mobiFile.getMobiHeader ();
+            exthHead = mobiFile.getExthHeader ();
 
             if (0 < mobiHead.indxRecord)
             {
                 int idx = mobiHead.indxRecord;
-                int indxStart = bean.records[idx].offset;
+                int indxStart = pdbHead.records[idx].offset;
                 buffer.position(indxStart);
 
                 indxHead = mb.read(buffer, IndxHeader.class);
@@ -94,10 +94,10 @@ public class Inspect {
         catch (Exception e) { e.printStackTrace(); }
 
         out.println("## PDB ##");
-        out.println("Name:    " + bean.name);
-        out.println("Type:    " + new String(bean.type));
-        out.println("Creator: " + new String(bean.creator));
-        out.println("Records: " + bean.recordCount);
+        out.println("Name:    " + pdbHead.name);
+        out.println("Type:    " + new String(pdbHead.type));
+        out.println("Creator: " + new String(pdbHead.creator));
+        out.println("Records: " + pdbHead.recordCount);
         out.println();
 
         out.println("## Palm ##");
