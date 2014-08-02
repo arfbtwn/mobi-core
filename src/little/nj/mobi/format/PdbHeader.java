@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ package little.nj.mobi.format;
 import little.nj.data.MarshalBuilder.*;
 
 public class PdbHeader {
-    
+
     public static final int LENGTH_NAME = 32;
-    
+
     @Encoding
     @FixedLength(length = LENGTH_NAME)
     public String       name;
@@ -38,7 +38,7 @@ public class PdbHeader {
     public final byte[] creator             = new byte[4];
     public int          uniqueSeedID;
     public int          nextRecordListID;
-    
+
     @Counter(counter = 1)
     public short        recordCount;
 

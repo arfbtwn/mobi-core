@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,15 +22,15 @@ import little.nj.data.MarshalBuilder.*;
 public class ExthHeader {
 
     public static final String EXTH = "EXTH";
-    
+
     @Constant
     @FixedLength(length=4)
     public final String identifier = EXTH;
     public int          length;
-    
+
     @Counter(counter=1)
     public int          count;
-    
+
     @Counted(counter=1)
     public ExthRecord[] records;
 

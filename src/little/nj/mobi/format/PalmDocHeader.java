@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 package little.nj.mobi.format;
 
 public class PalmDocHeader {
-    
+
     public short compression;
     public short unused;
     public int   uncompressedTextLength;
     public short textRecordCount;
     public short textRecordSize;
     public int   currentPosition;
-    
+
 }

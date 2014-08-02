@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@ import little.nj.data.MarshalBuilder.FixedLength;
 public class TagxHeader {
 
     public static final String TAGX = "TAGX";
-    
+
     @FixedLength(length=4)
     public final String identifier = TAGX;
-    
+
     @Counter(counter=0,adjustment=12)
     public int length;
-    
+
     public int controlBytes;
-    
+
     @Counted(counter=0)
     public byte[] tags;
 }

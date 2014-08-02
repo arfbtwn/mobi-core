@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class ExthUtil {
-    
+
     public static final String UNKNOWN = "Unknown";
-    
+
     /*
      * Known Strings
      */
@@ -49,7 +49,7 @@ public class ExthUtil {
     public static final int UPDATED_DATE    = 502;
     public static final int UPDATED_TITLE   = 503;
     public static final int CREATOR_EXTRA   = 535;
-    
+
     /*
      * Known Integers
      */
@@ -64,9 +64,9 @@ public class ExthUtil {
     public static final int CREATOR_MINOR   = 206;
     public static final int CREATOR_BUILD   = 207;
     public static final int FONT_SIGNATURE  = 300;
-    
+
     final Charset charset;
-    
+
     Map<Integer, String> all = new HashMap<Integer, String>();
     Set<Integer> integers = new HashSet<Integer>();
 
@@ -75,12 +75,12 @@ public class ExthUtil {
         this.charset = charset;
         registerDefaults();
     }
-    
+
     public ExthUtil()
     {
         this(Charset.defaultCharset());
     }
-    
+
     protected void registerDefaults()
     {
         register(AUTHOR, "Author");
@@ -111,47 +111,47 @@ public class ExthUtil {
         registerInt(CREATOR_MINOR, "Creator Minor");
         registerInt(CREATOR_BUILD, "Creator Build");
         registerInt(FONT_SIGNATURE, "Font Signature");
-        
+
         registerInt(131);
     }
-    
+
     public void register(int id, String name)
     {
         all.put(id, name);
     }
-    
+
     public void register(int id)
     {
         register(id, null);
     }
-    
+
     public void registerInt(int id, String name)
     {
         all.put(id, name);
         integers.add(id);
     }
-    
+
     public void registerInt(int id)
     {
         registerInt(id, null);
     }
-    
+
     public String nameOf(ExthRecord record)
     {
         String name = all.get(record.id);
         return null == name ? UNKNOWN : name;
     }
-    
+
     public Object decode(ExthRecord record)
     {
         if (integers.contains(record.id))
         {
             return ByteBuffer.wrap(record.data).getInt();
         }
-        
+
         return new String(record.data, charset);
     }
-    
+
     public void encode(ExthRecord record, Object value)
     {
         if (integers.contains(record.id))
@@ -159,7 +159,7 @@ public class ExthUtil {
             ByteBuffer.wrap(record.data).putInt((int) value);
             return;
         }
-        
+
         record.data = value.toString().getBytes(charset);
         record.length = record.data.length - 8;
     }

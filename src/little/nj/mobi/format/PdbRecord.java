@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ public class PdbRecord implements Comparable<PdbRecord> {
     public int offset;
     public byte flags;
     public final byte[] id = new byte[3];
-    
+
     public int getId() {
         return (id[0] << 16 | id[1] << 8 | id[2]) & 0xffffff;
     }
-    
+
     public void setId(int i) {
         if (i >>> 24 != 0)
             throw new IllegalArgumentException("ID Out of Range: " + i);
@@ -35,13 +35,13 @@ public class PdbRecord implements Comparable<PdbRecord> {
         id[1] = (byte) ((i & 0xFF00) >>> 8);
         id[2] = (byte) (i & 0xFF);
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof PdbRecord &&
                 0 == compareTo((PdbRecord)obj);
     }
-    
+
     @Override
     public int compareTo(PdbRecord o) {
         return offset - o.offset;

@@ -1,16 +1,16 @@
 /**
  * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,7 @@ import little.nj.algorithms.KmpSearch;
 public class PalmDocCodec implements Codec {
 
     /**
-     * The default back track distance for repeated string 
+     * The default back track distance for repeated string
      * compression (0x7ff == 2047)
      */
     public static final int DEFAULT_DISTANCE = 0x7ff;
@@ -37,14 +37,14 @@ public class PalmDocCodec implements Codec {
     /**
      * The default set of techniques, all of them
      */
-    public static final EnumSet<Technique> DEFAULT_TECHNIQUES = 
+    public static final EnumSet<Technique> DEFAULT_TECHNIQUES =
             EnumSet.allOf(Technique.class);
 
     /**
      * A class to set options pertaining to PalmDoc compression
-     * 
+     *
      * @author Nicholas Little
-     * 
+     *
      */
     public static class CompressionOptions {
 
@@ -86,9 +86,9 @@ public class PalmDocCodec implements Codec {
 
     /**
      * An object to track the compression job
-     * 
+     *
      * @author Nicholas
-     * 
+     *
      */
     public static class CompressionStats {
 
@@ -115,7 +115,7 @@ public class PalmDocCodec implements Codec {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.lang.Object#toString()
          */
         @Override
@@ -131,9 +131,9 @@ public class PalmDocCodec implements Codec {
 
     /**
      * An enum of compression techniques to use
-     * 
+     *
      * @author Nicholas
-     * 
+     *
      */
     public enum Technique {
         REPEATS, SPACES
@@ -171,7 +171,7 @@ public class PalmDocCodec implements Codec {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see algorithms.ICodec#compress(byte[])
      */
     @Override
@@ -270,7 +270,7 @@ public class PalmDocCodec implements Codec {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see algorithms.ICodec#decompress(byte[])
      */
     @Override
@@ -310,17 +310,17 @@ public class PalmDocCodec implements Codec {
                      */
                     b = (short) (b << 8);
                     b = (short) (b | in.get() & 0xff);
-                    
+
                     short back = (short) (b >>> 3 & 0x7ff); // 11 bits
                     byte length = (byte) (b & 0x7); // 3 bits
-                    
+
                     int pos = raw.position();
                     raw.position(pos - back);
                     byte[] tmp = new byte[length + 3];
                     raw.get(tmp);
                     raw.position(pos);
                     raw.put(tmp);
-                    
+
                 } else if (b >= 0xc0 && b <= 0xff) {
                     /*
                      * Collapsed space
@@ -329,16 +329,16 @@ public class PalmDocCodec implements Codec {
                     b = (short) (b ^ 0x80);
                     raw.put((byte) b);
                 }
-                
+
                 if (!in.hasRemaining())
                     break;
-                
+
             } while (in.position() < in.capacity());
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return raw.position();
     }
 

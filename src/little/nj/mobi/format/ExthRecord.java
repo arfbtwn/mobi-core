@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ import little.nj.data.MarshalBuilder.Counter;
 public class ExthRecord {
 
     public int id;
-    
+
     @Counter(counter=1,adjustment=8)
     public int length;
-    
+
     @Counted(counter=1)
     public byte[] data;
 }
