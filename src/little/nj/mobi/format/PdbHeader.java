@@ -34,8 +34,12 @@ public class PdbHeader {
     public int          modificationNumber;
     public int          appInfoID;
     public int          sortInfoID;
-    public final byte[] type                = new byte[4];
-    public final byte[] creator             = new byte[4];
+
+    @FixedLength(length = 4)
+    public String       type;
+    @FixedLength(length = 4)
+    public String       creator;
+
     public int          uniqueSeedID;
     public int          nextRecordListID;
 

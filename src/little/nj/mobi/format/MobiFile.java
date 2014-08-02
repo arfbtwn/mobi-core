@@ -54,6 +54,12 @@ public class MobiFile {
 
     public static MobiFile parse(PdbFile pdbFile) throws InvalidHeaderException
     {
+        if (!"BOOK".equals(pdbFile.header.type) ||
+            !"MOBI".equals(pdbFile.header.creator))
+        {
+            throw new InvalidHeaderException();
+        }
+
         MobiFile file = new MobiFile();
 
         MarshalBuilder mb = new MarshalBuilder();
