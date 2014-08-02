@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 
+ * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@ import little.nj.data.MarshalBuilder.*;
 
 @Counted(counter=0)
 public class MobiDocHeader {
-    
+
     public static final String MOBI = "MOBI";
-    
+
     @Constant
     @FixedLength(length=4)
-    public final String     identifier = MOBI;
-    
+    public String     identifier;
+
     @Counter(counter=0)
     public int              length;
     public int              type;
@@ -84,6 +84,6 @@ public class MobiDocHeader {
     public int              skeletonRecord;
     public int              datpRecord;
     public int              guideRecord;
-    
+
     public boolean hasExth() { return 0x40 == (exthFlags & 0x40); }
 }
