@@ -96,7 +96,7 @@ public class PalmDocCodec implements Codec {
 
         int o_length = 0;
 
-        private Map<Byte[], Integer> rep_ba_pos = new HashMap<>();
+        private Map<Byte[], Integer> rep_ba_pos = new HashMap<Byte[], Integer>();
 
         int repeats = 0;
 

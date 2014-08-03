@@ -156,7 +156,7 @@ public class ExthUtil {
     {
         if (integers.contains(record.id))
         {
-            ByteBuffer.wrap(record.data).putInt((int) value);
+            ByteBuffer.wrap(record.data).putInt((Integer) value);
             return;
         }
 
