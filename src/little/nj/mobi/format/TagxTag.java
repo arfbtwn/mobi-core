@@ -17,34 +17,34 @@
  */
 package little.nj.mobi.format;
 
-import little.nj.data.MarshalBuilder.Counted;
-import little.nj.data.MarshalBuilder.Counter;
-import little.nj.data.MarshalBuilder.FixedLength;
 
-public class TagxHeader {
+public class TagxTag implements Comparable<TagxTag>
+{
+    public final byte id;
+    public final byte numValues;
+    public final byte bitMask;
+    public final byte eof;
 
-    public static final String TAGX = "TAGX";
-
-    @FixedLength(length=4)
-    public final String identifier = TAGX;
-
-    @Counter(counter=0,adjustment=12)
-    public int length;
-
-    public int controlBytes;
-
-    @Counted(counter=0)
-    public byte[] tags;
-
-    public TagxTag[] getTags ()
+    TagxTag(byte[] bytes, int offset)
     {
-        TagxTag[] _tags = new TagxTag [tags.length / 4];
+        id        = bytes [offset];
+        numValues = bytes [offset + 1];
+        bitMask   = bytes [offset + 2];
+        eof       = bytes [offset + 3];
+    }
 
-        for (int i = 0, end = tags.length; i < end; i += 4)
-        {
-            _tags [i / 4] = new TagxTag (tags, i);
-        }
+    @Override
+    public String toString ()
+    {
+        return String.format (
+            "{ ID = %d, Values = %d, Mask = %d, Eof = %d }",
+            id, numValues, bitMask, eof
+        );
+    }
 
-        return _tags;
+    @Override
+    public int compareTo (TagxTag o)
+    {
+        return id - o.id;
     }
 }
