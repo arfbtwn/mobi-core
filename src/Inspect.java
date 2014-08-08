@@ -207,6 +207,20 @@ public class Inspect {
                     out.println (idxt.ident + ": " + decoded);
                 }
             }
+
+            out.println ();
+        }
+
+        if (null != mobiFile.ncxRecord)
+        {
+            out.println ("## NCX ##");
+
+            for (String entry : mobiFile.ncxRecord.getEntries ())
+            {
+                out.println (entry);
+            }
+
+            out.println ();
         }
     }
 }
