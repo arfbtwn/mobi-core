@@ -1,0 +1,135 @@
+package little.nj.mobi.format;
+/**
+ * Copyright (C) 2014
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import javax.xml.bind.DatatypeConverter;
+
+@SuppressWarnings("serial")
+public class VariableWidthInteger extends Number
+{
+    public static void main (String [] args)
+    {
+        byte[] bs = new byte [] { 0x04, 0x22, (byte) 0x91 };
+
+        long value = parseForward (ByteBuffer.wrap (bs));
+
+        System.out.printf ("Value:    %,d%n", value);
+
+        byte[] ebs = encodeBackward (value);
+
+        System.out.printf ("Backward: %s%n", DatatypeConverter.printHexBinary (ebs));
+
+        ebs = encodeForward (value);
+
+        System.out.printf ("Forward:  %s%n", DatatypeConverter.printHexBinary (ebs));
+    }
+
+    public static byte[] encodeForward (long value)
+    {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream ();
+
+        bos.write ((byte)(value & 0x7f | 0x80));
+        value >>>= 7;
+        do
+        {
+            bos.write ((byte)(value & 0x7f));
+            value >>>= 7;
+        }
+        while (0 != value);
+
+        byte[] arr = bos.toByteArray ();
+        reverse (arr);
+        return arr;
+    }
+
+    public static byte[] encodeBackward (long value)
+    {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream ();
+
+        do
+        {
+            bos.write ((byte)(value & 0x7f));
+            value >>>= 7;
+        }
+        while (0x7f < value);
+        bos.write ((byte)(value & 0x7f | 0x80));
+
+        byte[] arr = bos.toByteArray ();
+        reverse (arr);
+        return arr;
+    }
+
+    private static final void reverse (byte[] bytes)
+    {
+        for (int i = 0, j = bytes.length - 1; i < j; ++i, --j)
+        {
+            bytes[i] ^= bytes[j];
+            bytes[j] ^= bytes[i];
+            bytes[i] ^= bytes[j];
+        }
+    }
+
+    public static long parseForward (ByteBuffer buffer)
+    {
+        long result = 0;
+        byte b;
+        do
+        {
+            b = buffer.get ();
+
+            result <<= 7;
+            result |= b & 0x7f;
+        }
+        while (0x80 != (b & 0x80));
+
+        return result;
+    }
+
+    Long value;
+
+    public VariableWidthInteger(long value)
+    {
+        this.value = value;
+    }
+
+    @Override
+    public int intValue ()
+    {
+        return value.intValue ();
+    }
+
+    @Override
+    public long longValue ()
+    {
+        return value.longValue ();
+    }
+
+    @Override
+    public float floatValue ()
+    {
+        return value.floatValue ();
+    }
+
+    @Override
+    public double doubleValue ()
+    {
+        return value.doubleValue ();
+    }
+}
