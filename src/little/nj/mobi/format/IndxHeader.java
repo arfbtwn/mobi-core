@@ -25,32 +25,32 @@ public class IndxHeader {
 
     @FixedLength(length=4)
     public final String identifier = INDX;
+    public int          firstEntryOffset;
 
-    public int firstEntryOffset;
+    public int          unknownInteger1;
 
-    public int unknownInteger1;
+    public int          indxType;
 
-    public int indxType;
+    public int          unknownInteger2;
 
-    public int unknownInteger2;
-
-    public int idxtOffset;
-    public int indexEntryCount;
-    public int indexEncoding;
-    public int indexLanguage;
-    public int totalEntryCount;
-    public int ordtOffset;
-    public int ligtOffset;
-    public int ligtCount;
-    public int cncxCount;
+    public int          idxtOffset;
+    public int          indexCount;
+    public int          indexEncoding;
+    public short        indexDialect;
+    public short        indexLanguage;
+    public int          totalEntryCount;
+    public int          ordtOffset;
+    public int          ligtOffset;
+    public int          ligtCount;
+    public int          cncxCount;
 
     public final byte[] unknownBytes2 = new byte[108];
 
-    public int ordtCount;
-    public int ordtEntries;
-    public int ordt1Offset;
-    public int ordt2Offset;
-    public int tagxOffset;
+    public int          ordtCount;
+    public int          ordtEntries;
+    public int          ordt1Offset;
+    public int          ordt2Offset;
+    public int          tagxOffset;
 
     public final byte[] unknownBytes3 = new byte[8];
 }

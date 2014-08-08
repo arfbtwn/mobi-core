@@ -36,10 +36,15 @@ public class Unpack {
     public static void main(String[] args)
     {
         File book;
-        //book = new File(args[0]);
+
         //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy Books (1-15)/Abnett, Dan/Horus Rising/Horus Rising - Dan Abnett.mobi");
         //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy/WH40K - The Horus Heresy 20 - Christian Dunn - The Primarchs.mobi");
         book = new File("/home/nicholas/Documents/EBooks/Kindle/Card, Orson Scott - Ender 01 - Ender's Game.mobi");
+
+        if (0 < args.length)
+        {
+            book = new File(args[0]);
+        }
 
         File dir = new File("book");
 

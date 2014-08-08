@@ -47,7 +47,8 @@ public class MobiDocHeader {
     public int              firstNonBookRecord;
     public int              fullNameOffset;
     public int              fullNameLength;
-    public int              locale;
+    public short            dialect;
+    public short            language;
     public int              languageInput;
     public int              languageOutput;
     public int              minimumReaderVersion;

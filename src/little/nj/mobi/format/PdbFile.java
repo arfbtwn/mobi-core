@@ -23,15 +23,8 @@ import little.nj.data.MarshalBuilder;
 
 public class PdbFile {
 
-    PdbHeader header;
-    byte[][] records;
-
-    PdbFile() { }
-
-    public PdbHeader getHeader()
-    {
-        return header;
-    }
+    public PdbHeader header;
+    public byte[][] records;
 
     public int size()
     {
@@ -50,6 +43,11 @@ public class PdbFile {
         return record >= 0 && record < records.length
             ? records [record]
             : null;
+    }
+
+    public ByteBuffer getRecordBuffer(int record)
+    {
+        return ByteBuffer.wrap(records [record]);
     }
 
     public static PdbFile parse(ByteBuffer buffer)

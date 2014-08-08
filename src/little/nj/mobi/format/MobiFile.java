@@ -18,38 +18,27 @@
 package little.nj.mobi.format;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import little.nj.data.MarshalBuilder;
+import little.nj.data.MarshalRoot;
 
 public class MobiFile {
 
-    PdbFile       pdbFile;
+    public PdbFile       pdbFile;
 
-    PalmDocHeader palmHeader;
-    MobiDocHeader mobiHeader;
-    ExthHeader    exthHeader;
-    IndxHeader    indxHeader;
+    public PalmDocHeader palmHeader;
+    public MobiDocHeader mobiHeader;
+    public ExthHeader    exthHeader;
 
-    MobiFile() { }
+    public IndexRecord[] indexRecords;
 
-    public PalmDocHeader getPalmHeader()
+    public NcxRecord     ncxRecord;
+
+    public boolean hasIndex ()
     {
-        return palmHeader;
-    }
-
-    public MobiDocHeader getMobiHeader()
-    {
-        return mobiHeader;
-    }
-
-    public ExthHeader getExthHeader()
-    {
-        return exthHeader;
-    }
-
-    public IndxHeader getIndxHeader()
-    {
-        return indxHeader;
+        return null != indexRecords && 0 < indexRecords.length;
     }
 
     public static MobiFile parse(PdbFile pdbFile) throws InvalidHeaderException
@@ -61,8 +50,9 @@ public class MobiFile {
         }
 
         MobiFile file = new MobiFile();
+        file.pdbFile = pdbFile;
 
-        MarshalBuilder mb = new MarshalBuilder();
+        MarshalBuilder mb = MarshalRoot.getInstance ();
         ByteBuffer buffer = ByteBuffer.wrap(pdbFile.getRecordData(0));
 
         file.palmHeader = mb.read(buffer, PalmDocHeader.class);
@@ -80,11 +70,32 @@ public class MobiFile {
 
         if (0 < file.mobiHeader.indxRecord)
         {
-            buffer = ByteBuffer.wrap(pdbFile.getRecordData(file.mobiHeader.indxRecord));
-            file.indxHeader = mb.read(buffer, IndxHeader.class);
-        }
+            int idx = file.mobiHeader.indxRecord;
+            IndexReader reader = new IndexReader ();
 
-        file.pdbFile = pdbFile;
+            buffer = pdbFile.getRecordBuffer (idx);
+
+            List<IndexRecord> records = new ArrayList<IndexRecord>();
+            IndexRecord mainIndex = reader.parseIndexRecord (buffer);
+            records.add (mainIndex);
+
+            for (int i = idx + 1, end = idx + 1 + mainIndex.indxHead.indexCount;
+                 i < end; ++i)
+            {
+                buffer = pdbFile.getRecordBuffer (i);
+                records.add (reader.parseIndexRecord (buffer));
+            }
+
+            file.indexRecords = records.toArray (new IndexRecord[records.size ()]);
+
+            if (0 < mainIndex.indxHead.cncxCount)
+            {
+                idx += mainIndex.indxHead.indexCount + mainIndex.indxHead.cncxCount;
+                file.ncxRecord = new NcxRecord ();
+                file.ncxRecord.parse (pdbFile.getRecordBuffer (idx));
+            }
+
+        }
 
         return file;
     }

@@ -25,10 +25,17 @@ import java.nio.ByteBuffer;
 
 import javax.xml.bind.DatatypeConverter;
 
-import little.nj.data.MarshalBuilder;
+import little.nj.mobi.format.Enumerations;
+import little.nj.mobi.format.Enumerations.Compression;
+import little.nj.mobi.format.Enumerations.Dialect;
+import little.nj.mobi.format.Enumerations.Encoding;
+import little.nj.mobi.format.Enumerations.Language;
+import little.nj.mobi.format.Enumerations.MobiType;
 import little.nj.mobi.format.ExthHeader;
 import little.nj.mobi.format.ExthRecord;
 import little.nj.mobi.format.ExthUtil;
+import little.nj.mobi.format.IndexRecord;
+import little.nj.mobi.format.IndexRecord.IdxtEntry;
 import little.nj.mobi.format.IndxHeader;
 import little.nj.mobi.format.InvalidHeaderException;
 import little.nj.mobi.format.MobiDocHeader;
@@ -37,17 +44,30 @@ import little.nj.mobi.format.PalmDocHeader;
 import little.nj.mobi.format.PdbFile;
 import little.nj.mobi.format.PdbHeader;
 import little.nj.mobi.format.TagxHeader;
+import little.nj.mobi.format.TagxTag;
 import little.nj.util.FileUtil;
 import little.nj.util.StreamUtil.InputAction;
+import little.nj.util.StringUtil;
 
 public class Inspect {
 
     public static void main(String [] args) throws InvalidHeaderException
     {
         File book;
-        //book = new File(args[0]);
-        book = new File("/home/nicholas/Documents/EBooks/Horus Heresy Books (1-15)/Abnett, Dan/Horus Rising/Horus Rising - Dan Abnett.mobi");
+
+        //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy Books (1-15)/Abnett, Dan/Horus Rising/Horus Rising - Dan Abnett.mobi");
         //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy/WH40K - The Horus Heresy 20 - Christian Dunn - The Primarchs.mobi");
+        book = new File("/home/nicholas/Documents/EBooks/Kindle/Card, Orson Scott - Ender 01 - Ender's Game.mobi");
+
+        if (0 < args.length)
+        {
+            book = new File (args[0]);
+        }
+
+        if (!book.canRead ())
+        {
+            return;
+        }
 
         FileUtil util = new FileUtil();
         final byte[] data = new byte[(int)book.length()];
@@ -61,10 +81,10 @@ public class Inspect {
 
         ByteBuffer buffer = ByteBuffer.wrap(data);
 
-        MarshalBuilder mb = new MarshalBuilder();
+        PdbFile       pdbFile = null;
+        PdbHeader     pdbHead = null;
 
-        PdbHeader pdbHead = null;
-
+        MobiFile      mobiFile = null;
         PalmDocHeader palmHead = null;
         MobiDocHeader mobiHead = null;
         ExthHeader    exthHead = null;
@@ -73,25 +93,21 @@ public class Inspect {
 
         try
         {
-            PdbFile pdbFile = PdbFile.parse(buffer);
-            MobiFile mobiFile = MobiFile.parse (pdbFile);
+            pdbFile  = PdbFile.parse(buffer);
+            mobiFile = MobiFile.parse (pdbFile);
 
-            pdbHead = pdbFile.getHeader ();
-            palmHead = mobiFile.getPalmHeader ();
-            mobiHead = mobiFile.getMobiHeader ();
-            exthHead = mobiFile.getExthHeader ();
+            pdbHead  = pdbFile.header;
+            palmHead = mobiFile.palmHeader;
+            mobiHead = mobiFile.mobiHeader;
+            exthHead = mobiFile.exthHeader;
 
-            if (0 < mobiHead.indxRecord)
+            if (mobiFile.hasIndex ())
             {
-                int idx = mobiHead.indxRecord;
-                int indxStart = pdbHead.records[idx].offset;
-                buffer.position(indxStart);
-
-                indxHead = mb.read(buffer, IndxHeader.class);
-                tagxHead = mb.read(buffer, TagxHeader.class);
+                indxHead = mobiFile.indexRecords [0].indxHead;
+                tagxHead = mobiFile.indexRecords [0].tagxHead;
             }
         }
-        catch (Exception e) { e.printStackTrace(); }
+        catch (Exception e) { e.printStackTrace(); return; }
 
         out.println("## PDB ##");
         out.println("Name:    " + pdbHead.name);
@@ -103,15 +119,17 @@ public class Inspect {
         out.println("## Palm ##");
         out.println("Text Size:         " + palmHead.textRecordSize);
         out.println("Text Count:        " + palmHead.textRecordCount);
-        out.println("Compression:       " + palmHead.compression);
+        out.println("Compression:       " + Enumerations.tryParse (palmHead.compression, Compression.class));
         out.println("Uncompressed Size: " + palmHead.uncompressedTextLength);
         out.println("Current Position:  " + palmHead.currentPosition);
         out.println();
 
         out.println("## Mobi ##");
+        out.println("Document Type:  " + Enumerations.tryParse (mobiHead.type, MobiType.class));
         out.println("Minimum Reader: " + mobiHead.minimumReaderVersion);
-        out.println("Encoding:       " + mobiHead.encoding);
-        out.println("Locale:         " + mobiHead.locale);
+        out.println("Encoding:       " + Enumerations.tryParse (mobiHead.encoding, Encoding.class));
+        out.println("Language:       " + Enumerations.tryParse (mobiHead.language, Language.class));
+        out.println("Dialect:        " + Enumerations.tryParse (mobiHead.dialect, Dialect.class));
         out.println("Language in:    " + mobiHead.languageInput);
         out.println("Language out:   " + mobiHead.languageOutput);
         out.println("First Content:  " + mobiHead.firstContentRecord);
@@ -159,9 +177,10 @@ public class Inspect {
             out.println("First Entry:       " + indxHead.firstEntryOffset);
             out.println("Type:              " + indxHead.indxType);
             out.println("IDXT Offset:       " + indxHead.idxtOffset);
-            out.println("Index Entry Count: " + indxHead.indexEntryCount);
-            out.println("Index Encoding:    " + indxHead.indexEncoding);
-            out.println("Index Language:    " + indxHead.indexLanguage);
+            out.println("Index Count:       " + indxHead.indexCount);
+            out.println("Index Encoding:    " + Enumerations.tryParse (indxHead.indexEncoding, Encoding.class));
+            out.println("Index Language:    " + Enumerations.tryParse (indxHead.indexLanguage, Language.class));
+            out.println("Index Dialect:     " + Enumerations.tryParse (indxHead.indexDialect, Dialect.class));
             out.println("Total Entry Count: " + indxHead.totalEntryCount);
             out.println("ORDT Offset:       " + indxHead.ordtOffset);
             out.println("LIGT Offset:       " + indxHead.ligtOffset);
@@ -177,6 +196,17 @@ public class Inspect {
             out.println("Control Bytes: " + tagxHead.controlBytes);
             out.println("Tags:          " + tagxHead.tags.length + " => " + DatatypeConverter.printHexBinary(tagxHead.tags));
             out.println();
+
+            TagxTag[] tags = tagxHead.getTags ();
+
+            for (IndexRecord index : mobiFile.indexRecords)
+            {
+                for (IdxtEntry idxt : index.idxtEntries)
+                {
+                    String decoded = StringUtil.valueOf (idxt.decode (tagxHead.controlBytes, tags));
+                    out.println (idxt.ident + ": " + decoded);
+                }
+            }
         }
     }
 }

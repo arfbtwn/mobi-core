@@ -45,7 +45,7 @@ public class IndexReader
         {
             buffer.position (recHead.idxtOffset + 4);
 
-            int[] idxtStarts = new int [recHead.indexEntryCount + 1];
+            int[] idxtStarts = new int [recHead.indexCount + 1];
             idxtStarts [idxtStarts.length - 1] = recHead.idxtOffset;
 
             for (int i = 0, end = idxtStarts.length - 1; i < end; ++i)
