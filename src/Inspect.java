@@ -103,8 +103,8 @@ public class Inspect {
 
             if (mobiFile.hasIndex ())
             {
-                indxHead = mobiFile.indexRecords [0].indxHead;
-                tagxHead = mobiFile.indexRecords [0].tagxHead;
+                indxHead = mobiFile.mainIndex.indxHead;
+                tagxHead = mobiFile.mainIndex.tagxHead;
             }
         }
         catch (Exception e) { e.printStackTrace(); return; }
