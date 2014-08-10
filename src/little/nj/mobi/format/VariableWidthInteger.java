@@ -1,4 +1,3 @@
-package little.nj.mobi.format;
 /**
  * Copyright (C) 2014
  * Nicholas J. Little <arealityfarbetween@googlemail.com>
@@ -16,29 +15,41 @@ package little.nj.mobi.format;
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package little.nj.mobi.format;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import javax.xml.bind.DatatypeConverter;
 
-@SuppressWarnings("serial")
-public class VariableWidthInteger extends Number
+public class VariableWidthInteger
 {
     public static void main (String [] args)
     {
-        byte[] bs = new byte [] { 0x04, 0x22, (byte) 0x91 };
+        long i = 0x11111;
 
-        long value = parseForward (ByteBuffer.wrap (bs));
+        System.out.printf ("Original: %,d%n", i);
+        System.out.println ();
 
-        System.out.printf ("Value:    %,d%n", value);
+        System.out.println ("## Forward ##");
 
-        byte[] ebs = encodeBackward (value);
+        byte[] bs_fwd = encodeForward (i);
 
-        System.out.printf ("Backward: %s%n", DatatypeConverter.printHexBinary (ebs));
+        System.out.printf ("Encoded:  %s%n", DatatypeConverter.printHexBinary (bs_fwd));
 
-        ebs = encodeForward (value);
+        long i_fwd = parseForward (bs_fwd, 0);
 
-        System.out.printf ("Forward:  %s%n", DatatypeConverter.printHexBinary (ebs));
+        System.out.printf ("Parsed:   %,d%n", i_fwd);
+        System.out.println ();
+
+        System.out.println ("## Backward ##");
+
+        byte[] bs_bck = encodeBackward (i);
+
+        System.out.printf ("Encoded:  %s%n", DatatypeConverter.printHexBinary (bs_bck));
+
+        long i_bck = parseBackward (bs_bck, bs_bck.length - 1);
+
+        System.out.printf ("Parsed:   %,d%n", i_bck);
     }
 
     public static byte[] encodeForward (long value)
@@ -102,34 +113,26 @@ public class VariableWidthInteger extends Number
         return result;
     }
 
-    Long value;
-
-    public VariableWidthInteger(long value)
+    public static long parseForward (byte[] bytes, int offset)
     {
-        this.value = value;
+        return parseForward (ByteBuffer.wrap (bytes, offset, bytes.length - offset));
     }
 
-    @Override
-    public int intValue ()
+    public static long parseBackward (byte[] bytes, int offset)
     {
-        return value.intValue ();
+        long result = 0;
+        byte b;
+        int length = 0;
+        do
+        {
+            b = bytes [offset--];
+
+            result |= (b & 0x7f) << (length++ * 7);
+        }
+        while (0x80 != (b & 0x80));
+
+        return result;
     }
 
-    @Override
-    public long longValue ()
-    {
-        return value.longValue ();
-    }
-
-    @Override
-    public float floatValue ()
-    {
-        return value.floatValue ();
-    }
-
-    @Override
-    public double doubleValue ()
-    {
-        return value.doubleValue ();
-    }
+    private VariableWidthInteger () { }
 }
