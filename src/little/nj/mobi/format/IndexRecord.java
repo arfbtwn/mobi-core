@@ -66,13 +66,17 @@ public class IndexRecord
                 {
                     continue;
                 }
-
-                byte mask = tag.bitMask;
-
-                while (0 == (mask & 0x1))
+                else if (tag.bitMask != value)
                 {
-                    value >>= 1;
-                    mask  >>= 1;
+                    byte mask = tag.bitMask;
+
+                    while (0 == (mask & 0x1))
+                    {
+                        value >>= 1;
+                        mask  >>= 1;
+                    }
+
+                    throw new UnsupportedOperationException ();
                 }
 
                 ByteBuffer buffer = ByteBuffer.wrap (bytes, controlBytes, bytes.length - controlBytes);
