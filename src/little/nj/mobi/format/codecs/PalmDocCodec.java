@@ -288,11 +288,10 @@ public class PalmDocCodec implements Codec {
             do {
                 short b = (short) (in.get() & 0xff);
                 if (b == 0x00) {
-                    break;
                     /*
                      * Null represents itself
                      */
-                    // raw.put((byte) b);
+                    raw.put((byte) b);
                 } else if (b >= 0x1 && b <= 0x8)
                     /*
                      * 1 - 8 Literals (high range characters)
