@@ -17,9 +17,15 @@
  */
 package little.nj.mobi.format;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import little.nj.data.MarshalBuilder;
+import little.nj.data.MarshalRoot;
+import little.nj.util.FileUtil;
+import little.nj.util.StreamUtil.OutputAction;
 
 public class PdbFile {
 
@@ -48,6 +54,43 @@ public class PdbFile {
     public ByteBuffer getRecordBuffer(int record)
     {
         return ByteBuffer.wrap(records [record]);
+    }
+
+    public void writeTo (File file)
+    {
+        FileUtil util = new FileUtil ();
+
+        final byte[] data = new byte [length ()];
+
+        ByteBuffer buffer = ByteBuffer.wrap (data);
+
+        MarshalRoot.write (buffer, header);
+
+        for (byte[] i : records)
+        {
+            buffer.put (i);
+        }
+
+        util.write (file, new OutputAction () {
+
+            @Override
+            public void act (OutputStream stream) throws IOException
+            {
+                stream.write (data);
+            }
+        });
+    }
+
+    public int length ()
+    {
+        int length = header.length ();
+
+        for (byte[] i : records)
+        {
+            length += i.length;
+        }
+
+        return length;
     }
 
     public static PdbFile parse(ByteBuffer buffer)
