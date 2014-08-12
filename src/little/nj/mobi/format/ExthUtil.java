@@ -163,4 +163,24 @@ public class ExthUtil {
         record.data = value.toString().getBytes(charset);
         record.length = record.data.length - 8;
     }
+
+    public ExthRecord encode (int id, Object value)
+    {
+        ExthRecord record = new ExthRecord ();
+        record.id = id;
+
+        if (integers.contains(id))
+        {
+            Number num = (Number) value;
+            record.data = ByteBuffer.allocate(4).putInt(num.intValue ()).array ();
+        }
+        else
+        {
+            record.data = value.toString().getBytes(charset);
+        }
+
+        record.length = record.data.length + 8;
+
+        return record;
+    }
 }
