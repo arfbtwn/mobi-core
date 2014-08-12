@@ -58,6 +58,7 @@ public class Inspect {
         //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy Books (1-15)/Abnett, Dan/Horus Rising/Horus Rising - Dan Abnett.mobi");
         //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy/WH40K - The Horus Heresy 20 - Christian Dunn - The Primarchs.mobi");
         book = new File("/home/nicholas/Documents/EBooks/Kindle/Card, Orson Scott - Ender 01 - Ender's Game.mobi");
+        //book = new File ("output.mobi");
 
         if (0 < args.length)
         {
@@ -125,8 +126,23 @@ public class Inspect {
         out.println();
 
         out.println("## Mobi ##");
-        out.println("Document Type:  " + Enumerations.tryParse (mobiHead.type, MobiType.class));
+        out.println("Header Length:  " + mobiHead.length);
+        out.println("Header Version: " + mobiHead.version);
         out.println("Minimum Reader: " + mobiHead.minimumReaderVersion);
+        out.println("Unique ID:      " + mobiHead.uniqueID);
+        out.println();
+        out.println("Orth Index:     " + mobiHead.orthographicIndex);
+        out.println("Infl'n Index:   " + mobiHead.inflexionIndex);
+        out.println("Index Names:    " + mobiHead.indexNames);
+        out.println("Index Keys:     " + mobiHead.indexKeys);
+        out.println("Index Extra 1:  " + mobiHead.indexExtra1);
+        out.println("Index Extra 2:  " + mobiHead.indexExtra2);
+        out.println("Index Extra 3:  " + mobiHead.indexExtra3);
+        out.println("Index Extra 4:  " + mobiHead.indexExtra4);
+        out.println("Index Extra 5:  " + mobiHead.indexExtra5);
+        out.println("Index Extra 6:  " + mobiHead.indexExtra6);
+        out.println();
+        out.println("Document Type:  " + Enumerations.tryParse (mobiHead.type, MobiType.class));
         out.println("Encoding:       " + Enumerations.tryParse (mobiHead.encoding, Encoding.class));
         out.println("Language:       " + Enumerations.tryParse (mobiHead.language, Language.class));
         out.println("Dialect:        " + Enumerations.tryParse (mobiHead.dialect, Dialect.class));
