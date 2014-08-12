@@ -18,7 +18,6 @@
 package little.nj.mobi.format;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +29,8 @@ import little.nj.mobi.format.Enumerations.Encoding;
 public class MobiFile {
 
     public PdbFile       pdbFile;
+
+    public RecordZero    recordZero;
 
     public PalmDocHeader palmHeader;
     public MobiDocHeader mobiHeader;
@@ -76,29 +77,21 @@ public class MobiFile {
         file.pdbFile = pdbFile;
 
         MarshalBuilder mb = MarshalRoot.getInstance ();
+        mb.register (RecordZero.class, RecordZero.MARSHAL);
+
         ByteBuffer buffer = pdbFile.getRecordBuffer (0);
 
-        file.palmHeader = mb.read(buffer, PalmDocHeader.class);
-        file.mobiHeader = mb.read(buffer, MobiDocHeader.class);
+        file.recordZero = mb.read (buffer, RecordZero.class);
 
-        if (!MobiDocHeader.MOBI.equals(file.mobiHeader.identifier))
-        {
-            throw new InvalidHeaderException();
-        }
-
-        Charset charset = Enumerations.parse (file.mobiHeader.encoding, Encoding.class)
-            .getCharset ();
+        file.palmHeader = file.recordZero.palmHead;
+        file.mobiHeader = file.recordZero.mobiHead;
 
         if (file.mobiHeader.hasExth())
         {
-            file.exthHeader = mb.read(buffer, ExthHeader.class);
+            file.exthHeader = file.recordZero.exthHead;
         }
 
-        byte[] name = new byte [file.mobiHeader.fullNameLength];
-        buffer.position (file.mobiHeader.fullNameOffset);
-        buffer.get (name);
-
-        file.bookName = new String (name, charset);
+        file.bookName = file.recordZero.bookName;
 
         if (0 < file.mobiHeader.indxRecord)
         {
