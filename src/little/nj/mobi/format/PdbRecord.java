@@ -19,6 +19,8 @@ package little.nj.mobi.format;
 
 public class PdbRecord implements Comparable<PdbRecord> {
 
+    public static final int LENGTH = 8;
+
     public int offset;
     public byte flags;
     public final byte[] id = new byte[3];

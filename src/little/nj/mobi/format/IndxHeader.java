@@ -21,6 +21,8 @@ import little.nj.data.MarshalBuilder.FixedLength;
 
 public class IndxHeader {
 
+    public static final int LENGTH = 192;
+
     public static final String INDX = "INDX";
 
     @FixedLength(length=4)

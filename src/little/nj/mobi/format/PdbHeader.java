@@ -21,6 +21,7 @@ import little.nj.data.MarshalBuilder.*;
 
 public class PdbHeader {
 
+    public static final int LENGTH = 78;
     public static final int LENGTH_NAME = 32;
 
     @Encoding
@@ -48,4 +49,9 @@ public class PdbHeader {
 
     @Counted(counter = 1)
     public PdbRecord[] records;
+
+    public int length ()
+    {
+        return LENGTH + PdbRecord.LENGTH * recordCount;
+    }
 }

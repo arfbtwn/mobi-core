@@ -19,6 +19,8 @@ package little.nj.mobi.format;
 
 public class PalmDocHeader {
 
+    public static final int LENGTH = 16;
+
     public short compression;
     public short unused;
     public int   uncompressedTextLength;
