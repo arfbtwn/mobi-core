@@ -24,6 +24,12 @@ public class TextRecord
     public final byte[] recordBytes;
     public final byte[] trailingEntries;
 
+    public TextRecord (byte[] recordBytes, byte... trailingEntries)
+    {
+        this.recordBytes = recordBytes;
+        this.trailingEntries = trailingEntries;
+    }
+
     TextRecord (int flags, byte[] input)
     {
         int textEnd = input.length - 1;
