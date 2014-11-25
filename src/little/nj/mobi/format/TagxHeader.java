@@ -28,7 +28,7 @@ public class TagxHeader {
     @FixedLength(length=4)
     public final String identifier = TAGX;
 
-    @Counter(counter=0,adjustment=12)
+    @Counter(id=0,adjustment=12)
     public int length;
 
     public int controlBytes;

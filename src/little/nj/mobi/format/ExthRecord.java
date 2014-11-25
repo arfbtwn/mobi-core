@@ -24,7 +24,7 @@ public class ExthRecord {
 
     public int id;
 
-    @Counter(counter=1,adjustment=8)
+    @Counter(id=1,adjustment=8)
     public int length;
 
     @Counted(counter=1)

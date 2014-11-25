@@ -28,7 +28,7 @@ public class MobiDocHeader {
     @FixedLength(length=4)
     public String     identifier;
 
-    @Counter(counter=0)
+    @Counter(id=0)
     public int              length;
     public int              type;
     public int              encoding;

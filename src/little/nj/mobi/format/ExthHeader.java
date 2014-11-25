@@ -28,7 +28,7 @@ public class ExthHeader {
     public final String identifier = EXTH;
     public int          length;
 
-    @Counter(counter=1)
+    @Counter(id=1)
     public int          count;
 
     @Counted(counter=1)

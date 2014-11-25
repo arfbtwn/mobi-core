@@ -44,7 +44,7 @@ public class PdbHeader {
     public int          uniqueSeedID;
     public int          nextRecordListID;
 
-    @Counter(counter = 1)
+    @Counter(id = 1)
     public short        recordCount;
 
     @Counted(counter = 1)
