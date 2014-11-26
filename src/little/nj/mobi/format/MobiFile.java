@@ -103,8 +103,7 @@ public class MobiFile {
 
             IndexRecord mainIndex = reader.parseIndexRecord (buffer);
 
-            ++idx;
-            for (int end = idx + mainIndex.indxHead.indexCount; idx < end; ++idx)
+            for (int end = ++idx + mainIndex.indxHead.indexCount; idx < end; ++idx)
             {
                 buffer = pdbFile.getRecordBuffer (idx);
                 records.add (reader.parseIndexRecord (buffer));
