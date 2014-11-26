@@ -143,7 +143,7 @@ public final class Enumerations {
     public static enum Language implements Value<Short>
     {
 
-        ENGLISH(9);
+        NONE (0), ENGLISH(9);
 
         private Language(int value)
         {
@@ -162,7 +162,7 @@ public final class Enumerations {
     public static enum Dialect implements Value<Short>
     {
 
-        BRITISH(8), AMERICAN(4);
+        NONE (0), BRITISH(8), AMERICAN(4);
 
         public final short value;
 
