@@ -87,4 +87,16 @@ public class MobiDocHeader {
     public int              guideRecord;
 
     public boolean hasExth() { return 0x40 == (exthFlags & 0x40); }
+
+    public void    setExth(boolean present)
+    {
+        if (present)
+        {
+            exthFlags |= 0x40;
+        }
+        else
+        {
+            exthFlags &= ~0x40;
+        }
+    }
 }
