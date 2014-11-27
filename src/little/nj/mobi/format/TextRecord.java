@@ -48,4 +48,19 @@ public class TextRecord
         recordBytes = Arrays.copyOf (input, textEnd);
         trailingEntries = Arrays.copyOfRange (input, textEnd, input.length);
     }
+
+    public byte[] toByteArray ()
+    {
+        if (0 == trailingEntries.length)
+        {
+            return recordBytes;
+        }
+
+        byte[] complete = new byte [recordBytes.length + trailingEntries.length];
+
+        System.arraycopy (recordBytes, 0, complete, 0, recordBytes.length);
+        System.arraycopy (trailingEntries, 0, complete, recordBytes.length, trailingEntries.length);
+
+        return complete;
+    }
 }
