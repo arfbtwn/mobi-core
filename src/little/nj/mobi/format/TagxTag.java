@@ -33,6 +33,22 @@ public class TagxTag implements Comparable<TagxTag>
         eof       = bytes [offset + 3];
     }
 
+    public TagxTag (byte id, byte numValues, byte bitMask)
+    {
+        this.id        = id;
+        this.numValues = numValues;
+        this.bitMask   = bitMask;
+        this.eof       = 0;
+    }
+
+    public TagxTag ()
+    {
+        id        = 0;
+        numValues = 0;
+        bitMask   = 0;
+        eof       = 1;
+    }
+
     @Override
     public String toString ()
     {
