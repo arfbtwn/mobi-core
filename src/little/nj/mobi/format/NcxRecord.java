@@ -17,6 +17,8 @@
  */
 package little.nj.mobi.format;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +35,11 @@ public class NcxRecord
         this.entries = new ArrayList<String> ();
     }
 
+    public void addEntry (String entry)
+    {
+        entries.add (entry);
+    }
+
     public List<String> getEntries ()
     {
         return Collections.unmodifiableList (entries);
@@ -47,6 +54,24 @@ public class NcxRecord
             record.get (entry);
             entries.add (new String (entry));
         }
+    }
+
+    public byte[] toByteArray ()
+    {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream ();
+
+        try
+        {
+            for (String i : entries)
+            {
+                byte[] bytes = i.getBytes ();
+                bos.write (VariableWidthInteger.encodeForward (bytes.length));
+                bos.write (bytes);
+            }
+        }
+        catch (IOException e) { }
+
+        return bos.toByteArray ();
     }
 
     @Override
