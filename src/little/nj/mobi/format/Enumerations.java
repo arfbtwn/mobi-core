@@ -22,20 +22,21 @@ import java.util.EnumSet;
 
 public final class Enumerations {
 
-    public static interface Value<T>
+    public interface Value < T >
     {
         T getValue ();
     }
 
     public final static
-    <E, T extends Enum<T> & Value<E>> T parse(E value, Class<T> clz)
+    < E, T extends Enum < T > & Value < E > >
+    T convert ( E value, Class < T > clz )
     throws IllegalArgumentException
     {
         EnumSet<T> values = EnumSet.allOf (clz);
 
-        for (T i : values)
+        for ( T i : values )
         {
-            if (i.getValue ().equals (value))
+            if ( i.getValue ().equals ( value ) )
             {
                 return i;
             }
@@ -44,17 +45,21 @@ public final class Enumerations {
         throw new IllegalArgumentException ();
     }
 
-    public final static class Result<T> implements Value<T>
+    public final static class Result < T > implements Value < T >
     {
         final T value;
+        final boolean has;
+
         Result(T value)
         {
             this.value = value;
+            this.has   = true;
         }
 
         Result()
         {
             this.value = null;
+            this.has   = false;
         }
 
         @Override
@@ -65,7 +70,7 @@ public final class Enumerations {
 
         public boolean hasValue ()
         {
-            return null != value;
+            return has;
         }
 
         @Override
@@ -76,26 +81,26 @@ public final class Enumerations {
     }
 
     public final static
-    <E, T extends Enum<T> & Value<E>> Result<T> tryParse(E value, Class<T> clz)
+    < E, T extends Enum < T > & Value < E > >
+    Result < T > tryParse ( E value, Class < T > clz )
     {
         try
         {
-            return new Result<T> (parse (value, clz));
+            return new Result<> ( convert ( value, clz ) );
         }
-        catch (IllegalArgumentException ex)
+        catch ( IllegalArgumentException ex )
         {
-            return new Result<T> ();
+            return new Result<> ();
         }
     }
 
-    public static enum Compression implements Value<Short>
+    public enum Compression implements Value < Short >
     {
-
         HUFF_CDIC(17480), NONE(1), PALMDOC(2);
 
         final short value;
 
-        private Compression(int x)
+        Compression(int x)
         {
             value = (short) x;
         }
@@ -107,9 +112,8 @@ public final class Enumerations {
         }
     }
 
-    public static enum Encoding implements Value<Integer>
+    public static enum Encoding implements Value < Integer >
     {
-
         CP1252(1252) {
 
             @Override
@@ -127,7 +131,7 @@ public final class Enumerations {
 
         final int value;
 
-        private Encoding(int x)
+        Encoding(int x)
         {
             value = x;
         }
@@ -140,12 +144,11 @@ public final class Enumerations {
         public abstract Charset getCharset();
     }
 
-    public static enum Language implements Value<Short>
+    public enum Language implements Value < Short >
     {
-
         NONE (0), ENGLISH(9);
 
-        private Language(int value)
+        Language(int value)
         {
             this.value = (short) value;
         }
@@ -159,14 +162,13 @@ public final class Enumerations {
         }
     }
 
-    public static enum Dialect implements Value<Short>
+    public enum Dialect implements Value < Short >
     {
-
         NONE (0), BRITISH(8), AMERICAN(4);
 
         public final short value;
 
-        private Dialect(int value)
+        Dialect(int value)
         {
             this.value = (short) value;
         }
@@ -178,16 +180,15 @@ public final class Enumerations {
         }
     }
 
-    public static enum MobiType implements Value<Integer>
+    public enum MobiType implements Value < Integer >
     {
-
         AUDIO(4), KF8_KINDLEGEN2(248), MOBI_BOOK(2), MOBI_KINDLEGEN1_2(232),
         NEWS(257), NEWS_FEED(258), NEWS_MAGAZINE(259), PALM_BOOK(3),
         PICS(513), PPT(516), TEXT(517), WORD(514), XLS(515), HTML(518);
 
         final int value;
 
-        private MobiType(int x)
+        MobiType(int x)
         {
             value = x;
         }
@@ -198,5 +199,4 @@ public final class Enumerations {
             return value;
         }
     }
-
 }

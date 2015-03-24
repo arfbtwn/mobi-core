@@ -17,35 +17,36 @@
  */
 package little.nj.mobi.format;
 
-import little.nj.data.MarshalBuilder.*;
+import little.nj.data.Annotations.Counted;
+import little.nj.data.Annotations.Counter;
+import little.nj.data.Annotations.FixedLength;
 
 public class PdbHeader {
 
     public static final int LENGTH = 78;
     public static final int LENGTH_NAME = 32;
 
-    @Encoding
     @FixedLength(length = LENGTH_NAME)
-    public String       name;
-    public short        attributes;
-    public short        version;
-    public int          creationTime;
-    public int          modificationTime;
-    public int          backedUpTime;
-    public int          modificationNumber;
-    public int          appInfoID;
-    public int          sortInfoID;
+    public String      name;
+    public short       attributes;
+    public short       version;
+    public int         creationTime;
+    public int         modificationTime;
+    public int         backedUpTime;
+    public int         modificationNumber;
+    public int         appInfoID;
+    public int         sortInfoID;
 
     @FixedLength(length = 4)
-    public String       type;
+    public String      type;
     @FixedLength(length = 4)
-    public String       creator;
+    public String      creator;
 
-    public int          uniqueSeedID;
-    public int          nextRecordListID;
+    public int         uniqueSeedID;
+    public int         nextRecordListID;
 
     @Counter(id = 1)
-    public short        recordCount;
+    public short       recordCount;
 
     @Counted(counter = 1)
     public PdbRecord[] records;

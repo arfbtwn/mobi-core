@@ -17,13 +17,6 @@
  */
 package little.nj.mobi.format;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-
-import little.nj.data.MarshalBuilder.TypeMarshal;
-import little.nj.data.MarshalRoot;
-import little.nj.mobi.format.Enumerations.Encoding;
-
 public class RecordZero
 {
     public PalmDocHeader palmHead;
@@ -34,82 +27,14 @@ public class RecordZero
 
     public int size ()
     {
-        int offset = mobiHead.fullNameOffset + mobiHead.fullNameLength + 2,
-            pad    = offset % 4;
+        int len = mobiHead.fullNameOffset + mobiHead.fullNameLength + 2,
+            pad = len % 4;
 
         if (0 != pad)
         {
-            offset += 4 - pad;
+            len += 4 - pad;
         }
 
-        return offset;
+        return len;
     }
-
-    public static final TypeMarshal MARSHAL = new TypeMarshal ()
-    {
-        @Override
-        public Object read (ByteBuffer buffer)
-        {
-            RecordZero zero = new RecordZero ();
-
-            zero.palmHead = MarshalRoot.read (buffer, PalmDocHeader.class);
-            zero.mobiHead = MarshalRoot.read (buffer, MobiDocHeader.class);
-
-            if (!MobiDocHeader.MOBI.equals(zero.mobiHead.identifier))
-            {
-                // TODO: Replace
-                throw new RuntimeException ();
-            }
-
-            if (zero.mobiHead.hasExth ())
-            {
-                zero.exthHead = MarshalRoot.read (buffer, ExthHeader.class);
-            }
-
-            byte[] name = new byte [zero.mobiHead.fullNameLength];
-            buffer.position (zero.mobiHead.fullNameOffset);
-            buffer.get (name);
-
-            Charset set = Enumerations.parse (zero.mobiHead.encoding, Encoding.class)
-                .getCharset ();
-
-            zero.bookName = new String (name, set);
-
-            return zero;
-        }
-
-        @Override
-        public void write (ByteBuffer buffer, Object struct)
-        {
-            RecordZero zero = (RecordZero) struct;
-
-            int start = buffer.position ();
-
-            MarshalRoot.write (buffer, zero.palmHead);
-            MarshalRoot.write (buffer, zero.mobiHead);
-
-            if (zero.mobiHead.hasExth ())
-            {
-                MarshalRoot.write (buffer, zero.exthHead);
-            }
-
-            Charset set = Enumerations.parse (zero.mobiHead.encoding, Encoding.class)
-                .getCharset ();
-
-            byte[] name = zero.bookName.getBytes (set);
-
-            MarshalRoot.write (buffer, name);
-
-            buffer.putShort ((short) 0);
-
-            int pad = (buffer.position () - start) % 4;
-
-            if (0 != pad)
-            {
-                byte[] padding = new byte [4 - pad];
-                buffer.put (padding);
-            }
-        }
-
-    };
 }

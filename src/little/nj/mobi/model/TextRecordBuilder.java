@@ -17,15 +17,15 @@
  */
 package little.nj.mobi.model;
 
+import little.nj.mobi.codecs.Codec;
+import little.nj.mobi.codecs.RawCodec;
+import little.nj.mobi.format.Enumerations.Encoding;
+import little.nj.mobi.format.TextRecord;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import little.nj.mobi.format.Enumerations.Encoding;
-import little.nj.mobi.format.TextRecord;
-import little.nj.mobi.format.codecs.Codec;
-import little.nj.mobi.format.codecs.RawCodec;
 
 public class TextRecordBuilder
 {

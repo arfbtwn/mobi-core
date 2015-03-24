@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package little.nj.mobi.format.codecs;
+package little.nj.mobi.codecs;
 
 import static little.nj.util.ConversionUtil.convert;
 

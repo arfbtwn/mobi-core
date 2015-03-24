@@ -17,14 +17,13 @@
  */
 package little.nj.mobi.format;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import little.nj.data.MarshalBuilder;
-import little.nj.data.MarshalRoot;
 import little.nj.mobi.format.Enumerations.Compression;
 import little.nj.mobi.format.Enumerations.Encoding;
+import little.nj.mobi.util.IndexUtil;
+import little.nj.mobi.types.MobiBuffer;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class MobiFile {
 
@@ -41,18 +40,18 @@ public class MobiFile {
     public IndexRecord   mainIndex;
     public IndexRecord[] indexRecords;
 
-    public NcxRecord     ncxRecord;
+    public NcxRecord[]   ncxRecord;
 
     public TextRecord[]  textRecords;
 
     public Encoding getEncoding ()
     {
-        return Enumerations.parse (mobiHeader.encoding, Encoding.class);
+        return Enumerations.convert ( mobiHeader.encoding, Encoding.class );
     }
 
     public Compression getCompression ()
     {
-        return Enumerations.parse (palmHeader.compression, Compression.class);
+        return Enumerations.convert ( palmHeader.compression, Compression.class );
     }
 
     public boolean hasExth ()
@@ -65,7 +64,7 @@ public class MobiFile {
         return null != mainIndex && 0 < mobiHeader.indxRecord;
     }
 
-    public static MobiFile parse(PdbFile pdbFile) throws InvalidHeaderException
+    public static MobiFile parse(PdbFile pdbFile) throws InvalidHeaderException, IOException
     {
         if (!"BOOK".equals(pdbFile.header.type) ||
             !"MOBI".equals(pdbFile.header.creator))
@@ -76,12 +75,11 @@ public class MobiFile {
         MobiFile file = new MobiFile();
         file.pdbFile = pdbFile;
 
-        MarshalBuilder mb = MarshalRoot.getInstance ();
-        mb.register (RecordZero.class, RecordZero.MARSHAL);
+        MobiBuffer marshal = MobiBuffer.Instance;
 
         ByteBuffer buffer = pdbFile.getRecordBuffer (0);
 
-        file.recordZero = mb.read (buffer, RecordZero.class);
+        file.recordZero = marshal.read ( RecordZero.class, buffer );
 
         file.palmHeader = file.recordZero.palmHead;
         file.mobiHeader = file.recordZero.mobiHead;
@@ -96,26 +94,22 @@ public class MobiFile {
         if (0 < file.mobiHeader.indxRecord)
         {
             int idx = file.mobiHeader.indxRecord;
-            IndexReader reader = new IndexReader ();
-            List<IndexRecord> records = new ArrayList<IndexRecord>();
 
             buffer = pdbFile.getRecordBuffer (idx);
 
-            IndexRecord mainIndex = reader.parseIndexRecord (buffer);
-
-            for (int end = ++idx + mainIndex.indxHead.indexCount; idx < end; ++idx)
+            IndexRecord mainIndex = IndexUtil.parseIndexRecord (buffer);
+            file.mainIndex = mainIndex;
+            file.indexRecords = new IndexRecord[mainIndex.indxHead.indexCount];
+            for (int count = 0, end = ++idx + mainIndex.indxHead.indexCount; idx < end; ++count, ++idx)
             {
                 buffer = pdbFile.getRecordBuffer (idx);
-                records.add (reader.parseIndexRecord (buffer));
+                file.indexRecords[count] = IndexUtil.parseIndexRecord (buffer);
             }
 
-            file.mainIndex = mainIndex;
-            file.indexRecords = records.toArray (new IndexRecord[records.size ()]);
-
-            for (int end = idx + mainIndex.indxHead.cncxCount; idx < end; ++idx)
+            file.ncxRecord = new NcxRecord[mainIndex.indxHead.cncxCount];
+            for (int count = 0, end = idx + mainIndex.indxHead.cncxCount; idx < end; ++count, ++idx)
             {
-                file.ncxRecord = new NcxRecord ();
-                file.ncxRecord.parse (pdbFile.getRecordBuffer (idx));
+                file.ncxRecord[count] = NcxRecord.parse (pdbFile.getRecordBuffer (idx));
             }
         }
 

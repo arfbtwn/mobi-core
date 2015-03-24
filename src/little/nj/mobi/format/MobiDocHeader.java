@@ -17,74 +17,73 @@
  */
 package little.nj.mobi.format;
 
-import little.nj.data.MarshalBuilder.*;
+import little.nj.data.Annotations.*;
 
-@Counted(counter=0)
-public class MobiDocHeader {
-
+@Counted (counter=0)
+public class MobiDocHeader
+{
     public static final String MOBI = "MOBI";
 
-    @Constant
-    @FixedLength(length=4)
-    public String     identifier;
+    @FixedLength (length=4)
+    public String       identifier;
 
-    @Counter(id=0)
-    public int              length;
-    public int              type;
-    public int              encoding;
-    public int              uniqueID;
-    public int              version;
-    public int              orthographicIndex;
-    public int              inflexionIndex;
-    public int              indexNames;
-    public int              indexKeys;
-    public int              indexExtra1;
-    public int              indexExtra2;
-    public int              indexExtra3;
-    public int              indexExtra4;
-    public int              indexExtra5;
-    public int              indexExtra6;
-    public int              firstNonBookRecord;
-    public int              fullNameOffset;
-    public int              fullNameLength;
-    public short            dialect;
-    public short            language;
-    public int              languageInput;
-    public int              languageOutput;
-    public int              minimumReaderVersion;
-    public int              firstImageRecord;
-    public int              firstHuffmanRecord;
-    public int              huffmanRecordCount;
-    public int              huffmanTableOffset;
-    public int              huffmanTableLength;
-    public int              exthFlags;
-    public final byte[]     unknownBytes1 = new byte[32];
-    public int              unknownInteger1;
-    public int              drmOffset;
-    public int              drmCount;
-    public int              drmSize;
-    public int              drmFlags;
-    public final byte[]     unknownBytes2 = new byte[8];
-    public short            firstContentRecord;
-    public short            lastContentRecord;
-    public int              fdstRecord;
-    public int              fcisRecord;
-    public int              fcisCount;
-    public int              flisRecord;
-    public int              flisCount;
-    public final byte[]     unknownBytes3 = new byte[8];
-    public int              srcsRecord;
-    public int              srcsCount;
-    public int              unknownInteger5;
-    public int              unknownInteger6;
-    public int              extraRecordFlags;
-    public int              indxRecord;
-    public int              unknownInteger7;
-    public int              fragmentRecord;
-    public int              unknownInteger9;
-    public int              skeletonRecord;
-    public int              datpRecord;
-    public int              guideRecord;
+    @Counter (id=0)
+    public int          length;
+    public int          type;
+    public int          encoding;
+    public int          uniqueID;
+    public int          version;
+    public int          orthographicIndex;
+    public int          inflexionIndex;
+    public int          indexNames;
+    public int          indexKeys;
+    public int          indexExtra1;
+    public int          indexExtra2;
+    public int          indexExtra3;
+    public int          indexExtra4;
+    public int          indexExtra5;
+    public int          indexExtra6;
+    public int          firstNonBookRecord;
+    public int          fullNameOffset;
+    public int          fullNameLength;
+    public short        dialect;
+    public short        language;
+    public int          languageInput;
+    public int          languageOutput;
+    public int          minimumReaderVersion;
+    public int          firstImageRecord;
+    public int          firstHuffmanRecord;
+    public int          huffmanRecordCount;
+    public int          huffmanTableOffset;
+    public int          huffmanTableLength;
+    public int          exthFlags;
+    public final byte[] unknownBytes1 = new byte[32];
+    public int          unknownInteger1;
+    public int          drmOffset;
+    public int          drmCount;
+    public int          drmSize;
+    public int          drmFlags;
+    public final byte[] unknownBytes2 = new byte[8];
+    public short        firstContentRecord;
+    public short        lastContentRecord;
+    public int          fdstRecord;
+    public int          fcisRecord;
+    public int          fcisCount;
+    public int          flisRecord;
+    public int          flisCount;
+    public final byte[] unknownBytes3 = new byte[8];
+    public int          srcsRecord;
+    public int          srcsCount;
+    public int          unknownInteger5;
+    public int          unknownInteger6;
+    public int          extraRecordFlags;
+    public int          indxRecord;
+    public int          unknownInteger7;
+    public int          fragmentRecord;
+    public int          unknownInteger9;
+    public int          skeletonRecord;
+    public int          datpRecord;
+    public int          guideRecord;
 
     public boolean hasExth() { return 0x40 == (exthFlags & 0x40); }
 

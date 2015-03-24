@@ -16,42 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import static java.lang.System.out;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
+import little.nj.mobi.format.*;
+import little.nj.mobi.format.Enumerations.*;
+import little.nj.mobi.format.IndexRecord.IdxtEntry;
+import little.nj.mobi.util.ExthUtil;
+import little.nj.mobi.util.IndexUtil;
+import little.nj.util.StringUtil;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
-import little.nj.mobi.format.Enumerations;
-import little.nj.mobi.format.Enumerations.Compression;
-import little.nj.mobi.format.Enumerations.Dialect;
-import little.nj.mobi.format.Enumerations.Encoding;
-import little.nj.mobi.format.Enumerations.Language;
-import little.nj.mobi.format.Enumerations.MobiType;
-import little.nj.mobi.format.ExthHeader;
-import little.nj.mobi.format.ExthRecord;
-import little.nj.mobi.format.ExthUtil;
-import little.nj.mobi.format.IndexRecord;
-import little.nj.mobi.format.IndexRecord.IdxtEntry;
-import little.nj.mobi.format.IndxHeader;
-import little.nj.mobi.format.InvalidHeaderException;
-import little.nj.mobi.format.MobiDocHeader;
-import little.nj.mobi.format.MobiFile;
-import little.nj.mobi.format.PalmDocHeader;
-import little.nj.mobi.format.PdbFile;
-import little.nj.mobi.format.PdbHeader;
-import little.nj.mobi.format.TagxHeader;
-import little.nj.mobi.format.TagxTag;
-import little.nj.util.FileUtil;
-import little.nj.util.StreamUtil.InputAction;
-import little.nj.util.StringUtil;
+import static java.lang.System.out;
 
 public class Inspect {
 
-    public static void main(String [] args) throws InvalidHeaderException
+    public static void main( String [] args ) throws IOException, InvalidHeaderException
     {
         File book;
 
@@ -70,17 +52,14 @@ public class Inspect {
             return;
         }
 
-        FileUtil util = new FileUtil();
         final byte[] data = new byte[(int)book.length()];
 
-        util.read(book, new InputAction() {
-            @Override
-            public void act(InputStream stream) throws IOException {
-                stream.read(data);
-            }
-        });
+        try ( FileInputStream stream = new FileInputStream ( book ) )
+        {
+            stream.read ( data );
+        }
 
-        ByteBuffer buffer = ByteBuffer.wrap(data);
+        ByteBuffer buffer = ByteBuffer.wrap ( data );
 
         PdbFile       pdbFile = null;
         PdbHeader     pdbHead = null;
@@ -94,8 +73,8 @@ public class Inspect {
 
         try
         {
-            pdbFile  = PdbFile.parse(buffer);
-            mobiFile = MobiFile.parse (pdbFile);
+            pdbFile  = PdbFile.parse ( buffer );
+            mobiFile = MobiFile.parse ( pdbFile );
 
             pdbHead  = pdbFile.header;
             palmHead = mobiFile.palmHeader;
@@ -187,6 +166,9 @@ public class Inspect {
             }
         }
 
+        out.println ( "Book Name: " + mobiFile.bookName );
+        out.println ();
+
         if (null != indxHead)
         {
             out.println("## INDX ##");
@@ -213,7 +195,7 @@ public class Inspect {
             out.println("Tags:          " + tagxHead.tags.length + " => " + DatatypeConverter.printHexBinary(tagxHead.tags));
             out.println();
 
-            TagxTag[] tags = tagxHead.getTags ();
+            TagxTag[] tags = IndexUtil.getTags (tagxHead);
 
             for (IndexRecord index : mobiFile.indexRecords)
             {
@@ -227,15 +209,17 @@ public class Inspect {
             out.println ();
         }
 
-        if (null != mobiFile.ncxRecord)
+        if ( null != mobiFile.ncxRecord )
         {
-            out.println ("## NCX ##");
+            out.println ( "## NCX ##" );
 
-            for (String entry : mobiFile.ncxRecord.getEntries ())
+            for ( NcxRecord ncxRecord : mobiFile.ncxRecord )
             {
-                out.println (entry);
+                for ( String entry : ncxRecord )
+                {
+                    out.println ( entry );
+                }
             }
-
             out.println ();
         }
     }

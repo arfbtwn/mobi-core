@@ -17,11 +17,11 @@
  */
 package little.nj.mobi.format;
 
-import little.nj.data.MarshalBuilder.Counted;
-import little.nj.data.MarshalBuilder.Counter;
+import little.nj.data.Annotations.Counted;
+import little.nj.data.Annotations.Counter;
 
-public class ExthRecord {
-
+public class ExthRecord
+{
     public int id;
 
     @Counter(id=1,adjustment=8)

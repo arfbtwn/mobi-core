@@ -19,39 +19,9 @@ package little.nj.mobi.format;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-import javax.xml.bind.DatatypeConverter;
 
 public class VariableWidthInteger
 {
-    public static void main (String [] args)
-    {
-        long i = 0x11111;
-
-        System.out.printf ("Original: %,d%n", i);
-        System.out.println ();
-
-        System.out.println ("## Forward ##");
-
-        byte[] bs_fwd = encodeForward (i);
-
-        System.out.printf ("Encoded:  %s%n", DatatypeConverter.printHexBinary (bs_fwd));
-
-        long i_fwd = parseForward (bs_fwd, 0);
-
-        System.out.printf ("Parsed:   %,d%n", i_fwd);
-        System.out.println ();
-
-        System.out.println ("## Backward ##");
-
-        byte[] bs_bck = encodeBackward (i);
-
-        System.out.printf ("Encoded:  %s%n", DatatypeConverter.printHexBinary (bs_bck));
-
-        long i_bck = parseBackward (bs_bck, bs_bck.length - 1);
-
-        System.out.printf ("Parsed:   %,d%n", i_bck);
-    }
-
     public static byte[] encodeForward (long value)
     {
         ByteArrayOutputStream bos = new ByteArrayOutputStream ();

@@ -14,29 +14,12 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package little.nj.mobi.format.codecs;
+package little.nj.mobi.codecs;
 
-import java.util.Arrays;
+public interface Codec {
 
-public class RawCodec implements Codec {
+    byte[] compress(byte[] input);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see algorithms.ICodec#compress(byte[])
-     */
-    @Override
-    public byte[] compress(byte[] input) {
-        return Arrays.copyOf(input, input.length);
-    }
+    byte[] decompress(byte[] input);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see algorithms.ICodec#decompress(byte[])
-     */
-    @Override
-    public byte[] decompress(byte[] input) {
-        return Arrays.copyOf(input, input.length);
-    }
 }

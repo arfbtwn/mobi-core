@@ -17,16 +17,16 @@
  */
 package little.nj.mobi.format;
 
-import little.nj.data.MarshalBuilder.Counted;
-import little.nj.data.MarshalBuilder.Counter;
-import little.nj.data.MarshalBuilder.FixedLength;
+import little.nj.data.Annotations.Counted;
+import little.nj.data.Annotations.Counter;
+import little.nj.data.Annotations.FixedLength;
 
 public class TagxHeader {
 
     public static final String TAGX = "TAGX";
 
     @FixedLength(length=4)
-    public final String identifier = TAGX;
+    public String identifier = TAGX;
 
     @Counter(id=0,adjustment=12)
     public int length;
@@ -35,16 +35,4 @@ public class TagxHeader {
 
     @Counted(counter=0)
     public byte[] tags;
-
-    public TagxTag[] getTags ()
-    {
-        TagxTag[] _tags = new TagxTag [tags.length / 4];
-
-        for (int i = 0, end = tags.length; i < end; i += 4)
-        {
-            _tags [i / 4] = new TagxTag (tags, i);
-        }
-
-        return _tags;
-    }
 }

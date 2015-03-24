@@ -17,18 +17,23 @@
  */
 package little.nj.mobi.model;
 
+import little.nj.mobi.format.ExthHeader;
+import little.nj.mobi.format.ExthRecord;
+import little.nj.mobi.util.ExthUtil;
+import little.nj.tuples.Pair;
+import little.nj.tuples.Tuples;
+
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import little.nj.mobi.format.ExthHeader;
-import little.nj.mobi.format.ExthRecord;
-import little.nj.mobi.format.ExthUtil;
-
 public class ExthBuilder extends ExthUtil
 {
-    final Map<Integer, Object> entries = new LinkedHashMap<Integer, Object> ();
+    final Map<Integer, Object> entries = new LinkedHashMap<> ();
+    final List<Pair<Integer, Object>> extras = new ArrayList<>();
 
     public ExthBuilder () { }
 
@@ -40,10 +45,16 @@ public class ExthBuilder extends ExthUtil
         return this;
     }
 
+    public ExthBuilder add (int id, Object value)
+    {
+        extras.add (Tuples.tuple (id, value));
+        return this;
+    }
+
     public ExthHeader build ()
     {
         ExthHeader header = new ExthHeader ();
-        header.count = entries.size ();
+        header.count = entries.size () + extras.size ();
         header.length = 12;
         header.records = new ExthRecord [header.count];
 
@@ -51,6 +62,12 @@ public class ExthBuilder extends ExthUtil
         for (Entry<Integer, Object> i : entries.entrySet ())
         {
             ExthRecord record = encode (i.getKey (), i.getValue ());
+            header.length += record.length;
+            header.records [count++] = record;
+        }
+
+        for (Pair<Integer, Object> i : extras) {
+            ExthRecord record = encode (i.Item1, i.Item2);
             header.length += record.length;
             header.records [count++] = record;
         }

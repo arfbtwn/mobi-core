@@ -17,15 +17,13 @@
  */
 package little.nj.mobi.format;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
+import little.nj.data.Buffer;
+import little.nj.mobi.types.MobiBuffer;
 
-import little.nj.data.MarshalBuilder;
-import little.nj.data.MarshalRoot;
-import little.nj.util.FileUtil;
-import little.nj.util.StreamUtil.OutputAction;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class PdbFile {
 
@@ -56,29 +54,23 @@ public class PdbFile {
         return ByteBuffer.wrap(records [record]);
     }
 
-    public void writeTo (File file)
+    public void writeTo (File file) throws IOException
     {
-        FileUtil util = new FileUtil ();
-
         final byte[] data = new byte [length ()];
 
         ByteBuffer buffer = ByteBuffer.wrap (data);
 
-        MarshalRoot.write (buffer, header);
+        Buffer.Instance.write (header, buffer);
 
         for (byte[] i : records)
         {
             buffer.put (i);
         }
 
-        util.write (file, new OutputAction () {
-
-            @Override
-            public void act (OutputStream stream) throws IOException
-            {
-                stream.write (data);
-            }
-        });
+        try ( FileOutputStream stream = new FileOutputStream ( file ))
+        {
+            stream.write ( data );
+        }
     }
 
     public int length ()
@@ -93,11 +85,11 @@ public class PdbFile {
         return length;
     }
 
-    public static PdbFile parse(ByteBuffer buffer)
+    public static PdbFile parse(ByteBuffer buffer) throws IOException
     {
         PdbFile file = new PdbFile();
 
-        file.header = new MarshalBuilder().read(buffer, PdbHeader.class);
+        file.header = MobiBuffer.Instance.read ( PdbHeader.class, buffer );
         file.records = new byte[file.header.records.length][];
 
         int end = buffer.capacity();

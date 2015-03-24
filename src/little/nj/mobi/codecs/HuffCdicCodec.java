@@ -14,12 +14,30 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package little.nj.mobi.format.codecs;
+package little.nj.mobi.codecs;
 
-public interface Codec {
+import little.nj.exceptions.NotImplementedException;
 
-    byte[] compress(byte[] input);
+public class HuffCdicCodec implements Codec {
 
-    byte[] decompress(byte[] input);
+    /*
+     * (non-Javadoc)
+     *
+     * @see algorithms.ICodec#compress(byte[])
+     */
+    @Override
+    public byte[] compress(byte[] input) {
+        throw new NotImplementedException();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see algorithms.ICodec#decompress(byte[])
+     */
+    @Override
+    public byte[] decompress(byte[] input) {
+        throw new NotImplementedException();
+    }
 
 }

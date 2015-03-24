@@ -15,7 +15,12 @@
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package little.nj.mobi.format;
+package little.nj.mobi.util;
+
+import little.nj.expressions.predicates.Predicate;
+import little.nj.iterable.Iterables;
+import little.nj.mobi.format.ExthHeader;
+import little.nj.mobi.format.ExthRecord;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -182,5 +187,27 @@ public class ExthUtil {
         record.length = record.data.length + 8;
 
         return record;
+    }
+
+    public boolean hasRecord(ExthHeader header, int id)
+    {
+        return Iterables.contains (header.records, new ExthRecordIdPredicate (id));
+    }
+
+    public ExthRecord getRecord(ExthHeader header, final int id)
+    {
+        return Iterables.first (header.records, new ExthRecordIdPredicate (id));
+    }
+
+    class ExthRecordIdPredicate implements Predicate<ExthRecord>
+    {
+        final int id;
+        ExthRecordIdPredicate(int id) { this.id = id; }
+
+        @Override
+        public boolean evaluate (ExthRecord obj)
+        {
+            return id == obj.id;
+        }
     }
 }

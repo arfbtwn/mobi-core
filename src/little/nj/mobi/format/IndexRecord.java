@@ -17,73 +17,39 @@
  */
 package little.nj.mobi.format;
 
-import java.nio.ByteBuffer;
+import little.nj.mobi.util.IndexUtil;
+
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NavigableMap;
-import java.util.TreeMap;
 
 public class IndexRecord
 {
     public IndxHeader indxHead;
     public TagxHeader tagxHead;
 
-    public List<IdxtEntry> idxtEntries = new ArrayList<IdxtEntry>();
+    public List < IdxtEntry > idxtEntries = new ArrayList<>();
 
-    public void add (String ident, byte[] data)
-    {
-        idxtEntries.add (new IdxtEntry (ident, data));
-    }
-
-    public class IdxtEntry {
+    public static class IdxtEntry {
 
         public final String ident;
         public final byte[] bytes;
 
-        IdxtEntry (String ident, byte[] bytes)
+        public IdxtEntry (String ident, byte[] bytes)
         {
             this.ident = ident;
             this.bytes = bytes;
         }
 
-        public NavigableMap<TagxTag, Long> decode (int controlBytes, TagxTag[] tags)
+        public NavigableMap < TagxTag, Long > decode (int controlBytes, TagxTag[] tags)
         {
-            NavigableMap<TagxTag, Long> result = new TreeMap<TagxTag, Long>();
+            return IndexUtil.decode ( this, controlBytes, tags );
+        }
 
-            byte[] cba = Arrays.copyOf (bytes, controlBytes);
-
-            for (TagxTag tag : tags)
-            {
-                if (1 == tag.eof)
-                {
-                    continue;
-                }
-
-                int value = cba [0] & tag.bitMask;
-
-                if (0 == value)
-                {
-                    continue;
-                }
-                else if (tag.bitMask != value)
-                {
-                    byte mask = tag.bitMask;
-
-                    while (0 == (mask & 0x1))
-                    {
-                        value >>= 1;
-                        mask  >>= 1;
-                    }
-
-                    throw new UnsupportedOperationException ();
-                }
-
-                ByteBuffer buffer = ByteBuffer.wrap (bytes, controlBytes, bytes.length - controlBytes);
-                result.put (tag, VariableWidthInteger.parseForward (buffer));
-            }
-
-            return result;
+        int length ()
+        {
+            return 1 + ident.getBytes (Charset.forName ("US-ASCII")).length + bytes.length;
         }
     }
 }

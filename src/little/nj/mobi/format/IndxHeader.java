@@ -17,7 +17,7 @@
  */
 package little.nj.mobi.format;
 
-import little.nj.data.MarshalBuilder.FixedLength;
+import little.nj.data.Annotations.FixedLength;
 
 public class IndxHeader {
 
@@ -26,7 +26,7 @@ public class IndxHeader {
     public static final String INDX = "INDX";
 
     @FixedLength(length=4)
-    public final String identifier = INDX;
+    public String       identifier = INDX;
     public int          firstEntryOffset;
 
     public int          unknownInteger1;

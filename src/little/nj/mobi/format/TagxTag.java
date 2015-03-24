@@ -20,12 +20,17 @@ package little.nj.mobi.format;
 
 public class TagxTag implements Comparable<TagxTag>
 {
+    public static TagxTag end ()
+    {
+        return new TagxTag();
+    }
+
     public final byte id;
     public final byte numValues;
     public final byte bitMask;
     public final byte eof;
 
-    TagxTag(byte[] bytes, int offset)
+    public TagxTag(byte[] bytes, int offset)
     {
         id        = bytes [offset];
         numValues = bytes [offset + 1];
@@ -41,7 +46,7 @@ public class TagxTag implements Comparable<TagxTag>
         this.eof       = 0;
     }
 
-    public TagxTag ()
+    private TagxTag ()
     {
         id        = 0;
         numValues = 0;
@@ -62,5 +67,10 @@ public class TagxTag implements Comparable<TagxTag>
     public int compareTo (TagxTag o)
     {
         return id - o.id;
+    }
+
+    public boolean isEof()
+    {
+        return 1 == eof;
     }
 }

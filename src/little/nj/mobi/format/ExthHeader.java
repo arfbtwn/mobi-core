@@ -17,21 +17,20 @@
  */
 package little.nj.mobi.format;
 
-import little.nj.data.MarshalBuilder.*;
+import little.nj.data.Annotations.*;
 
-public class ExthHeader {
-
+public class ExthHeader
+{
     public static final String EXTH = "EXTH";
 
-    @Constant
-    @FixedLength(length=4)
-    public final String identifier = EXTH;
+    @FixedLength ( length = 4 )
+    public String       identifier = EXTH;
     public int          length;
 
-    @Counter(id=1)
+    @Counter ( id = 1 )
     public int          count;
 
-    @Counted(counter=1)
+    @Counted ( counter = 1 )
     public ExthRecord[] records;
 
 }

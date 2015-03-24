@@ -17,12 +17,12 @@
  */
 package little.nj.mobi.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import little.nj.mobi.format.PdbFile;
 import little.nj.mobi.format.PdbHeader;
 import little.nj.mobi.format.PdbRecord;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PdbBuilder
 {
@@ -30,8 +30,8 @@ public class PdbBuilder
     String type;
     String creator;
 
-    final List<Integer> record_ids = new ArrayList<Integer> ();
-    final List<byte[]> records = new ArrayList<byte[]> ();
+    final List<Integer> record_ids = new ArrayList<> ();
+    final List<byte[]> records = new ArrayList<> ();
 
     public PdbBuilder name (String name)
     {

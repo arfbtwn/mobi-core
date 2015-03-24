@@ -17,52 +17,37 @@
  */
 package little.nj.mobi.format;
 
+import little.nj.util.StringUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import little.nj.util.StringUtil;
-
-public class NcxRecord
+public class NcxRecord extends ArrayList < String >
 {
-    final List<String> entries;
-
-    public NcxRecord()
+    public static NcxRecord parse (ByteBuffer record)
     {
-        this.entries = new ArrayList<String> ();
-    }
+        NcxRecord ncx = new NcxRecord();
 
-    public void addEntry (String entry)
-    {
-        entries.add (entry);
-    }
-
-    public List<String> getEntries ()
-    {
-        return Collections.unmodifiableList (entries);
-    }
-
-    public void parse (ByteBuffer record)
-    {
         while (record.hasRemaining ())
         {
             long length = VariableWidthInteger.parseForward (record);
             byte[] entry = new byte [(int) length];
             record.get (entry);
-            entries.add (new String (entry));
+            ncx.add (new String (entry));
         }
+
+        return ncx;
     }
 
-    public byte[] toByteArray ()
+    public static byte[] toByteArray (NcxRecord record)
     {
         ByteArrayOutputStream bos = new ByteArrayOutputStream ();
 
         try
         {
-            for (String i : entries)
+            for (String i : record)
             {
                 byte[] bytes = i.getBytes ();
                 bos.write (VariableWidthInteger.encodeForward (bytes.length));
@@ -77,6 +62,6 @@ public class NcxRecord
     @Override
     public String toString ()
     {
-        return StringUtil.valueOf (entries);
+        return StringUtil.valueOf (this);
     }
 }
