@@ -15,9 +15,10 @@
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package little.nj.mobi.format;
+package little.nj.mobi.util;
 
-import little.nj.mobi.util.IndexUtil;
+import little.nj.mobi.format.IndexRecord;
+import little.nj.mobi.format.NcxRecord;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
