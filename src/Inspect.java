@@ -31,16 +31,17 @@ public class Inspect {
 
     public static void main( String [] args ) throws IOException, InvalidHeaderException
     {
-        File book;
-
-        //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy Books (1-15)/Abnett, Dan/Horus Rising/Horus Rising - Dan Abnett.mobi");
-        //book = new File("/home/nicholas/Documents/EBooks/Horus Heresy/WH40K - The Horus Heresy 20 - Christian Dunn - The Primarchs.mobi");
-        book = new File("/home/nicholas/Documents/EBooks/Kindle/Card, Orson Scott - Ender 01 - Ender's Game.mobi");
-        //book = new File ("output.mobi");
+        File book = null;
 
         if (0 < args.length)
         {
-            book = new File (args[0]);
+            book = new File ( args[ 0 ] );
+        }
+
+        if ( null == book )
+        {
+            out.println ( "Usage: inspect <file>" );
+            return;
         }
 
         if (!book.canRead ())
