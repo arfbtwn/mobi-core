@@ -68,7 +68,7 @@ public class IndexUtil
 
                 byte[] data = Arrays.copyOfRange (entry, 1 + entry [0], entry.length);
 
-                indexRecord.idxtEntries.add (new IdxtEntry(ident, data));
+                indexRecord.idxt.put (idxtStarts[i], new IdxtEntry(ident, data));
             }
         }
 
@@ -90,7 +90,7 @@ public class IndexUtil
 
     public static NavigableMap < TagxTag, Long > decode ( IdxtEntry entry, int controlBytes, TagxTag[] tags )
     {
-        NavigableMap < TagxTag, Long > result = new TreeMap<> ();
+        NavigableMap < TagxTag, Long > result = new TreeMap <> ();
 
         byte[] cba = Arrays.copyOf (entry.bytes, controlBytes);
 

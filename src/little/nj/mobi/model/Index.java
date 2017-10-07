@@ -20,43 +20,24 @@ package little.nj.mobi.model;
 import little.nj.mobi.model.Index.IndexEntry;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-public class Index implements Iterable<IndexEntry>
+public class Index extends ArrayList < IndexEntry >
 {
-    List<IndexEntry> index;
-
-    Index ()
-    {
-        index = new ArrayList<> ();
-    }
-
     public int add (Long offset, String ident)
     {
-        index.add (new IndexEntry (offset, ident));
-        return index.size ();
+        add (new IndexEntry (offset, ident));
+        return size ();
     }
 
     public int add (Long offset, String ident, String text)
     {
-        index.add (new IndexEntry (offset, ident, text));
-        return index.size ();
-    }
-
-    public void remove (int entry)
-    {
-        index.remove (entry);
-    }
-
-    public int size ()
-    {
-        return index.size ();
+        add (new IndexEntry (offset, ident, text));
+        return size ();
     }
 
     public void set (int entry, String text)
     {
-        index.get (entry).text = text;
+        get (entry).text = text;
     }
 
     public class IndexEntry
@@ -73,9 +54,9 @@ public class Index implements Iterable<IndexEntry>
             this (offset, ident, null);
         }
 
-        Long   offset;
-        String ident;
-        String text;
+        public final Long   offset;
+        public final String ident;
+        public       String text;
 
         @Override
         public String toString ()
@@ -84,14 +65,8 @@ public class Index implements Iterable<IndexEntry>
         }
     }
 
-    @Override
-    public Iterator<IndexEntry> iterator ()
-    {
-        return index.iterator ();
-    }
-
     public IndexEntry last ()
     {
-        return index.get (index.size () - 1);
+        return get (size () - 1);
     }
 }

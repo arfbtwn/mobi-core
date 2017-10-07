@@ -18,6 +18,7 @@
 package little.nj.mobi.model;
 
 import little.nj.exceptions.NotImplementedException;
+import little.nj.mobi.builders.MobiBuilder;
 import little.nj.mobi.codecs.Codec;
 import little.nj.mobi.codecs.PalmDocCodec;
 import little.nj.mobi.codecs.RawCodec;
@@ -39,124 +40,29 @@ import static little.nj.mobi.util.ExthUtil.*;
 
 public class MobiDocument
 {
-    String author, title, blurb, text, publisher, isbn;
+    public String author, title, blurb, text, publisher, isbn;
 
-    Date published;
+    public Date published;
 
-    BufferedImage cover, thumb;
+    public BufferedImage cover, thumb;
 
-    boolean inlineCover;
+    public boolean inlineCover;
 
-    Language language;
+    public Language language;
 
-    Dialect dialect;
+    public Dialect dialect;
 
-    final Set<String> subjects;
+    public final Set < String > subjects;
 
-    final Set<BufferedImage> images;
+    public final Set < BufferedImage > images;
 
-    final Index index;
+    public final Index index;
 
     public MobiDocument ()
     {
-        images = new LinkedHashSet<BufferedImage> ();
-        subjects = new HashSet<String> ();
-        index  = new Index ();
-    }
-
-    public String getAuthor ()
-    {
-        return author;
-    }
-
-    public void setAuthor (String author)
-    {
-        this.author = author;
-    }
-
-    public String getTitle ()
-    {
-        return title;
-    }
-
-    public void setTitle (String title)
-    {
-        this.title = title;
-    }
-
-    public String getBlurb ()
-    {
-        return blurb;
-    }
-
-    public void setBlurb (String blurb)
-    {
-        this.blurb = blurb;
-    }
-
-    public String getText ()
-    {
-        return text;
-    }
-
-    public void setText (String text)
-    {
-        this.text = text;
-    }
-
-    public Language getLanguage ()
-    {
-        return language;
-    }
-
-    public void setLanguage (Language language)
-    {
-        this.language = language;
-    }
-
-    public Dialect getDialect ()
-    {
-        return dialect;
-    }
-
-    public void setDialect (Dialect dialect)
-    {
-        this.dialect = dialect;
-    }
-
-    public String getPublisher ()
-    {
-        return publisher;
-    }
-
-    public void setPublisher (String publisher)
-    {
-        this.publisher = publisher;
-    }
-
-    public String getIsbn ()
-    {
-        return isbn;
-    }
-
-    public void setIsbn (String isbn)
-    {
-        this.isbn = isbn;
-    }
-
-    public Date getPublished ()
-    {
-        return published;
-    }
-
-    public void setPublished (Date published)
-    {
-        this.published = published;
-    }
-
-    public BufferedImage getCover ()
-    {
-        return cover;
+        images   = new LinkedHashSet <> ();
+        subjects = new HashSet <> ();
+        index    = new Index ();
     }
 
     public void setCover (BufferedImage cover)
@@ -165,30 +71,10 @@ public class MobiDocument
         images.add (cover);
     }
 
-    public BufferedImage getThumb ()
-    {
-        return thumb;
-    }
-
     public void setThumb (BufferedImage thumb)
     {
         this.thumb = thumb;
         images.add (thumb);
-    }
-
-    public Set<String> getSubjects ()
-    {
-        return subjects;
-    }
-
-    public Set<BufferedImage> getImages ()
-    {
-        return images;
-    }
-
-    public Index getIndex ()
-    {
-        return index;
     }
 
     public static MobiDocument fromMobiFile (MobiFile mobiFile)
@@ -257,9 +143,9 @@ public class MobiDocument
             TagxTag[] tags = IndexUtil.getTags (main.tagxHead);
             for (IndexRecord indx : mobiFile.indexRecords)
             {
-                for (IdxtEntry idxt : indx.idxtEntries)
+                for (IdxtEntry idxt : indx.idxt.values ())
                 {
-                    NavigableMap<?, Long> map = idxt.decode (tagx.controlBytes, tags);
+                    NavigableMap<TagxTag, Long> map = idxt.decode (tagx.controlBytes, tags);
 
                     if (map.isEmpty ())
                     {

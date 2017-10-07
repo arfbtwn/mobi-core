@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package little.nj.mobi.model;
+package little.nj.mobi.builders;
 
 import little.nj.mobi.codecs.Codec;
 import little.nj.mobi.codecs.HuffCdicCodec;
@@ -25,6 +25,7 @@ import little.nj.mobi.format.Enumerations.Compression;
 import little.nj.mobi.format.Enumerations.Encoding;
 import little.nj.mobi.format.Enumerations.MobiType;
 import little.nj.mobi.format.*;
+import little.nj.mobi.model.MobiDocument;
 import little.nj.mobi.types.MobiBuffer;
 import little.nj.util.ImageUtil;
 
@@ -38,7 +39,7 @@ import static little.nj.mobi.util.ExthUtil.*;
 
 public class MobiBuilder
 {
-    MobiDocument  document;
+    MobiDocument document;
 
     Encoding      encoding = Encoding.UTF8;
 
@@ -154,7 +155,7 @@ public class MobiBuilder
             .codec   (codec)
             .flags   (0)
             .size    (textRecordSize)
-            .text    (document.getText ())
+            .text    (document.text)
             .build   ();
 
         short countText = (short) textRecords.length;
@@ -171,18 +172,18 @@ public class MobiBuilder
 
         short countIndex = 0;
 
-        IndexRecord mainIndex = null;
-        IndexRecord[] indices = null;
-        NcxRecord   ncxRecord = null;
+        IndexRecord   mainIndex = null;
+        IndexRecord[] indices   = null;
+        NcxRecord     ncxRecord = null;
 
         if (index)
         {
             IndexBuilder indexBuilder = new IndexBuilder ()
-                .index (document.getIndex ())
+                .index (document.index)
                 .build ();
 
             mainIndex = indexBuilder.mainIndex;
-            indices = indexBuilder.records;
+            indices   = indexBuilder.records;
             ncxRecord = indexBuilder.ncxRecord;
 
             countIndex = (short) (2 + indices.length);
@@ -204,43 +205,44 @@ public class MobiBuilder
         mobiHead.identifier = MobiDocHeader.MOBI;
 
         // FIXME: Stepped according to Mobi header version?
-        mobiHead.length = 232;
-        mobiHead.type = type.getValue ();
-        mobiHead.version = mobiHeaderVersion;
+        mobiHead.length               = 232;
+        mobiHead.type                 = type.getValue ();
+        mobiHead.version              = mobiHeaderVersion;
+        mobiHead.minimumReaderVersion = minimumReaderVersion;
 
         mobiHead.orthographicIndex = -1;
-        mobiHead.inflexionIndex = -1;
-        mobiHead.indexKeys = -1;
-        mobiHead.indexNames = -1;
-        mobiHead.indexExtra1 = -1;
-        mobiHead.indexExtra2 = -1;
-        mobiHead.indexExtra3 = -1;
-        mobiHead.indexExtra4 = -1;
-        mobiHead.indexExtra5 = -1;
-        mobiHead.indexExtra6 = -1;
-        mobiHead.unknownInteger1 = -1;
-        mobiHead.drmOffset = -1;
-        mobiHead.drmCount = -1;
+        mobiHead.inflexionIndex    = -1;
+        mobiHead.indexKeys         = -1;
+        mobiHead.indexNames        = -1;
+        mobiHead.indexExtra1       = -1;
+        mobiHead.indexExtra2       = -1;
+        mobiHead.indexExtra3       = -1;
+        mobiHead.indexExtra4       = -1;
+        mobiHead.indexExtra5       = -1;
+        mobiHead.indexExtra6       = -1;
+        mobiHead.unknownInteger1   = -1;
+        mobiHead.drmOffset         = -1;
+        mobiHead.drmCount          = -1;
 
         mobiHead.encoding = encoding.getValue ();
         mobiHead.language = document.language.getValue ();
-        mobiHead.dialect = document.dialect.getValue ();
-        mobiHead.minimumReaderVersion = minimumReaderVersion;
+        mobiHead.dialect  = document.dialect.getValue ();
+
         mobiHead.fullNameLength = document.title.getBytes (set).length;
         mobiHead.fullNameOffset = PalmDocHeader.LENGTH + mobiHead.length;
 
         if (exth)
         {
             ExthBuilder exthBuilder = new ExthBuilder (set)
-                .put (AUTHOR, document.author)
-                .put (TITLE, document.title)
-                .put (ISBN, document.isbn)
-                .put (PUBLISHER, "MobiBuilder")
+                .put (AUTHOR,          document.author)
+                .put (TITLE,           document.title)
+                .put (ISBN,            document.isbn)
+                .put (PUBLISHER,       "MobiBuilder")
                 .put (PUBLISHING_DATE, document.published)
-                .put (BLURB, document.blurb)
-                .put (COVER, imageCover + 1)
-                .put (THUMB, imageThumb + 1)
-                .put (HASFAKECOVER, document.inlineCover ? 1 : 0);
+                .put (BLURB,           document.blurb)
+                .put (COVER,           imageCover + 1)
+                .put (THUMB,           imageThumb + 1)
+                .put (HASFAKECOVER,    document.inlineCover ? 1 : 0);
 
             for (String i : document.subjects)
             {

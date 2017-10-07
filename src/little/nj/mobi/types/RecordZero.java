@@ -63,8 +63,6 @@ public class RecordZero implements Type< little.nj.mobi.format.RecordZero >
 
     public final void write ( little.nj.mobi.format.RecordZero struct, ByteBuffer stream ) throws IOException
     {
-        int start = stream.position ();
-
         palm.write ( struct.palmHead, stream );
         mobi.write ( struct.mobiHead, stream );
 
@@ -79,10 +77,10 @@ public class RecordZero implements Type< little.nj.mobi.format.RecordZero >
         byte[] name = struct.bookName.getBytes ( set );
 
         stream.position ( struct.mobiHead.fullNameOffset );
-        stream.put ( name );
+        stream.put ( name, 0, struct.mobiHead.fullNameLength );
         stream.putShort ( (short) 0 );
 
-        int pad = (stream.position () - start) % 4;
+        int pad = (struct.mobiHead.fullNameLength + 2) % 4;
 
         if ( 0 != pad )
         {

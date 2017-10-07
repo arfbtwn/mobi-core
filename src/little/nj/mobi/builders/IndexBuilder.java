@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package little.nj.mobi.model;
+package little.nj.mobi.builders;
 
 import little.nj.mobi.format.IndexRecord;
 import little.nj.mobi.format.IndexRecord.IdxtEntry;
@@ -24,6 +24,7 @@ import little.nj.mobi.format.NcxRecord;
 import little.nj.mobi.format.TagxHeader;
 import little.nj.mobi.format.TagxTag;
 import little.nj.mobi.format.VariableWidthInteger;
+import little.nj.mobi.model.Index;
 import little.nj.mobi.model.Index.IndexEntry;
 
 public class IndexBuilder
@@ -90,17 +91,20 @@ public class IndexBuilder
         mainIndex.tagxHead.length = 12 + 4 * tags.length;
         mainIndex.tagxHead.controlBytes = tags_length;
         mainIndex.indxHead.idxtOffset = IndxHeader.LENGTH + mainIndex.tagxHead.length;
-        mainIndex.idxtEntries.add (new IdxtEntry(last.ident, new byte[] { 0, 0 }));
+
+        int offset = mainIndex.indxHead.idxtOffset;
+
+        mainIndex.idxt.put (offset -= 2, new IdxtEntry(last.ident, new byte[] { 0, 0 }));
 
         ncxRecord = new NcxRecord ();
         IndexRecord aux = new IndexRecord ();
-        aux.indxHead.indexCount = index.size ();
+        aux.indxHead.indexCount = 1;
         aux.indxHead.totalEntryCount = index.size ();
         for (IndexEntry i : index)
         {
             ncxRecord.add (i.text);
             byte[] encoded = VariableWidthInteger.encodeForward (i.offset);
-            aux.idxtEntries.add (new IdxtEntry(i.ident, encoded));
+            aux.idxt.put (offset -= encoded.length, new IdxtEntry(i.ident, encoded));
         }
         records = new IndexRecord [] { aux };
 

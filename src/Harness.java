@@ -67,25 +67,25 @@ public class Harness
 
             MobiDocument doc  = MobiDocument.fromMobiFile (mobiFile);
 
-            out.printf ("Title:     %s%n", doc.getTitle ());
-            out.printf ("Author:    %s%n", doc.getAuthor ());
-            out.printf ("ISBN:      %s%n", doc.getIsbn ());
-            out.printf ("Publisher: %s%n", doc.getPublisher ());
-            out.printf ("Published: %s%n", doc.getPublished ());
-            out.printf ("Subjects:  %s%n", StringUtil.valueOf (doc.getSubjects ()));
-            out.printf ("Length:    %,d%n", doc.getText ().length ());
-            out.printf ("Index:     %s%n", StringUtil.valueOf (doc.getIndex ()));
+            out.printf ("Title:     %s%n", doc.title);
+            out.printf ("Author:    %s%n", doc.author);
+            out.printf ("ISBN:      %s%n", doc.isbn);
+            out.printf ("Publisher: %s%n", doc.publisher);
+            out.printf ("Published: %s%n", doc.published);
+            out.printf ("Subjects:  %s%n", StringUtil.valueOf (doc.subjects));
+            out.printf ("Length:    %,d%n", doc.text.length ());
+            out.printf ("Index:     %s%n", StringUtil.valueOf (doc.index));
 
             out.println ("Extracting Content...");
 
-            final byte[] text = doc.getText ().getBytes ();
+            final byte[] text = doc.text.getBytes ();
 
             try ( FileOutputStream stream = new FileOutputStream ( new File ( "text.txt" ) ) )
             {
                 stream.write ( text );
             }
 
-            BufferedImage[] images = doc.getImages ().toArray (new BufferedImage[0]);
+            BufferedImage[] images = doc.images.toArray (new BufferedImage[0]);
             for (int i = 0, end = images.length; i < end; ++i)
             {
                 String name = String.format ("image_%02d", i + 1);

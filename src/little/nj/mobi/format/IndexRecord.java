@@ -20,16 +20,14 @@ package little.nj.mobi.format;
 import little.nj.mobi.util.IndexUtil;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NavigableMap;
+import java.util.*;
 
 public class IndexRecord
 {
     public IndxHeader indxHead;
     public TagxHeader tagxHead;
 
-    public List < IdxtEntry > idxtEntries = new ArrayList<>();
+    public final Map < Integer, IdxtEntry > idxt = new TreeMap <> ();
 
     public static class IdxtEntry {
 

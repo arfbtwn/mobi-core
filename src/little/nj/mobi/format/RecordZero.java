@@ -27,8 +27,8 @@ public class RecordZero
 
     public int size ()
     {
-        int len = mobiHead.fullNameOffset + mobiHead.fullNameLength + 2,
-            pad = len % 4;
+        int len =  mobiHead.fullNameOffset + mobiHead.fullNameLength + 2,
+            pad = (mobiHead.fullNameLength + 2) % 4;
 
         if (0 != pad)
         {
